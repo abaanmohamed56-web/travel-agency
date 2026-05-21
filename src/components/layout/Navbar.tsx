@@ -3,7 +3,8 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { TrendingUp, X, Menu, ChevronDown, Zap } from "lucide-react";
+import Image from "next/image";
+import { X, Menu, ChevronDown, Zap } from "lucide-react";
 
 const navLinks = [
   { label: "Features", href: "#features" },
@@ -48,15 +49,16 @@ export function Navbar() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             {/* Logo */}
-            <Link href="/" className="flex items-center gap-2 group">
-              <div className="relative">
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#00D4FF] to-[#0099CC] flex items-center justify-center shadow-glow-blue">
-                  <TrendingUp className="w-4 h-4 text-white" />
-                </div>
-                <div className="absolute inset-0 rounded-lg bg-gradient-to-br from-[#00D4FF] to-[#0099CC] blur-md opacity-50 group-hover:opacity-80 transition-opacity" />
-              </div>
+            <Link href="/" className="flex items-center gap-2.5 group">
+              <Image
+                src="/logo.svg"
+                alt="SkillPips"
+                width={28}
+                height={34}
+                className="transition-opacity group-hover:opacity-90"
+              />
               <span className="font-syne font-800 text-xl text-white tracking-tight">
-                Skill<span className="gradient-text-blue">Pips</span>
+                Skill<span className="gradient-text-gold">Pips</span>
               </span>
             </Link>
 

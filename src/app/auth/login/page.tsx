@@ -3,7 +3,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Eye, EyeOff, TrendingUp, ArrowRight, Mail, Lock, Zap } from "lucide-react";
+import Image from "next/image";
+import { Eye, EyeOff, ArrowRight, Mail, Lock } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -54,12 +55,10 @@ export default function LoginPage() {
       >
         <div className="card-premium rounded-2xl p-8 shadow-2xl">
           {/* Logo */}
-          <div className="flex items-center gap-2 mb-8">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#00D4FF] to-[#0099CC] flex items-center justify-center">
-              <TrendingUp className="w-4 h-4 text-white" />
-            </div>
+          <div className="flex items-center gap-3 mb-8">
+            <Image src="/logo.svg" alt="SkillPips" width={36} height={44} />
             <span className="font-syne font-bold text-xl text-white">
-              Skill<span className="gradient-text-blue">Pips</span>
+              Skill<span className="gradient-text-gold">Pips</span>
             </span>
           </div>
 
