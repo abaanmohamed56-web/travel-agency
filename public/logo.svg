@@ -1,0 +1,158 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 610" fill="none">
+  <defs>
+    <clipPath id="shieldClip">
+      <path d="M250,40 C168,40 72,66 72,66 L72,278 Q72,394 250,518 Q428,394 428,278 L428,66 C428,66 332,40 250,40 Z"/>
+    </clipPath>
+  </defs>
+
+  <!-- Outer gold shield border -->
+  <path d="M250,22 C162,22 55,50 55,50 L55,278 Q55,400 250,530 Q445,400 445,278 L445,50 C445,50 338,22 250,22 Z" fill="#D9B44A"/>
+
+  <!-- Inner shield (clipped) -->
+  <g clip-path="url(#shieldClip)">
+
+    <!-- Base: red fills TL and BR quadrants -->
+    <rect x="72" y="40" width="356" height="478" fill="#8C1B2A"/>
+
+    <!-- Navy: TR quadrant (top-right) -->
+    <rect x="250" y="40" width="178" height="238" fill="#1B2945"/>
+    <!-- Navy: BL quadrant (bottom-left) -->
+    <rect x="72" y="278" width="178" height="240" fill="#1B2945"/>
+
+    <!-- Gold cross dividers -->
+    <rect x="244" y="40" width="12" height="478" fill="#D9B44A"/>
+    <rect x="72" y="272" width="356" height="12" fill="#D9B44A"/>
+
+    <!-- ======= BEAR (top-left, red bg, facing right) ======= -->
+    <g fill="#D9B44A">
+      <!-- Main body -->
+      <ellipse cx="158" cy="179" rx="72" ry="33"/>
+      <!-- Rear haunch (larger) -->
+      <ellipse cx="94" cy="170" rx="33" ry="30"/>
+      <!-- Shoulder/wither mass -->
+      <ellipse cx="218" cy="162" rx="30" ry="26"/>
+      <!-- Neck -->
+      <ellipse cx="225" cy="176" rx="17" ry="12"/>
+      <!-- Head -->
+      <circle cx="232" cy="148" r="31"/>
+      <!-- Snout -->
+      <ellipse cx="259" cy="155" rx="14" ry="10"/>
+      <!-- Ear 1 -->
+      <circle cx="217" cy="119" r="10"/>
+      <!-- Ear 2 -->
+      <circle cx="241" cy="116" r="10"/>
+      <!-- Front-right leg -->
+      <ellipse cx="222" cy="207" rx="11" ry="23"/>
+      <!-- Front-left leg -->
+      <ellipse cx="199" cy="209" rx="11" ry="21"/>
+      <!-- Back-right leg -->
+      <ellipse cx="122" cy="207" rx="11" ry="23"/>
+      <!-- Back-left leg -->
+      <ellipse cx="100" cy="209" rx="11" ry="21"/>
+    </g>
+
+    <!-- ======= BULL (top-right, navy bg, facing right) ======= -->
+    <g fill="#D9B44A">
+      <!-- Main body -->
+      <ellipse cx="346" cy="178" rx="70" ry="33"/>
+      <!-- Rear/rump -->
+      <ellipse cx="282" cy="171" rx="36" ry="31"/>
+      <!-- Shoulder hump (characteristic of bull) -->
+      <ellipse cx="400" cy="158" rx="34" ry="30"/>
+      <!-- Neck -->
+      <ellipse cx="412" cy="173" rx="19" ry="14"/>
+      <!-- Head -->
+      <ellipse cx="420" cy="150" rx="20" ry="24"/>
+      <!-- Muzzle -->
+      <ellipse cx="432" cy="160" rx="10" ry="9"/>
+      <!-- Horn left (curving up-forward) -->
+      <path d="M412,131 Q406,110 420,104 Q424,116 416,130 Z"/>
+      <!-- Horn right -->
+      <path d="M424,130 Q428,108 442,106 Q440,118 428,130 Z"/>
+      <!-- Front-right leg -->
+      <ellipse cx="400" cy="207" rx="11" ry="23"/>
+      <!-- Front-left leg -->
+      <ellipse cx="377" cy="209" rx="11" ry="21"/>
+      <!-- Back-right leg -->
+      <ellipse cx="316" cy="207" rx="11" ry="23"/>
+      <!-- Back-left leg -->
+      <ellipse cx="294" cy="209" rx="11" ry="21"/>
+      <!-- Tail -->
+      <path d="M258,168 Q246,158 250,146 Q257,155 260,168 Z"/>
+    </g>
+
+    <!-- ======= LARGE "S" (centered on cross) ======= -->
+    <text
+      x="250" y="275"
+      text-anchor="middle"
+      dominant-baseline="middle"
+      font-family="Georgia, 'Times New Roman', serif"
+      font-size="235"
+      font-weight="900"
+      fill="#D9B44A">S</text>
+
+    <!-- ======= TREND ARROW CHART (bottom-left, navy bg) ======= -->
+    <g stroke="#D9B44A" stroke-linejoin="round" stroke-linecap="round">
+      <!-- Staircase line -->
+      <polyline
+        points="85,462 85,440 118,440 118,418 153,418 153,392 192,392 192,360 214,360"
+        fill="none" stroke-width="6"/>
+      <!-- Arrow head -->
+      <polygon points="214,360 195,366 214,342 233,366" fill="#D9B44A" stroke="none"/>
+    </g>
+
+    <!-- ======= CANDLESTICK CHART (bottom-right, red bg) ======= -->
+    <!-- Candle 1: small bearish -->
+    <line x1="278" y1="368" x2="278" y2="458" stroke="#D9B44A" stroke-width="2.5"/>
+    <rect x="271" y="403" width="14" height="28" fill="#8C1B2A" stroke="#D9B44A" stroke-width="2.5" rx="1"/>
+    <!-- Candle 2: bullish (taller) -->
+    <line x1="308" y1="355" x2="308" y2="450" stroke="#D9B44A" stroke-width="2.5"/>
+    <rect x="301" y="372" width="14" height="36" fill="#D9B44A" stroke="#D9B44A" stroke-width="2.5" rx="1"/>
+    <!-- Candle 3: bullish (tallest) -->
+    <line x1="338" y1="338" x2="338" y2="440" stroke="#D9B44A" stroke-width="2.5"/>
+    <rect x="331" y="352" width="14" height="42" fill="#D9B44A" stroke="#D9B44A" stroke-width="2.5" rx="1"/>
+    <!-- Candle 4: bearish -->
+    <line x1="368" y1="358" x2="368" y2="455" stroke="#D9B44A" stroke-width="2.5"/>
+    <rect x="361" y="388" width="14" height="30" fill="#8C1B2A" stroke="#D9B44A" stroke-width="2.5" rx="1"/>
+    <!-- Candle 5: small bullish -->
+    <line x1="398" y1="362" x2="398" y2="450" stroke="#D9B44A" stroke-width="2.5"/>
+    <rect x="391" y="377" width="14" height="35" fill="#D9B44A" stroke="#D9B44A" stroke-width="2.5" rx="1"/>
+
+  </g>
+
+  <!-- Inner shield stroke (on top of content) -->
+  <path d="M250,40 C168,40 72,66 72,66 L72,278 Q72,394 250,518 Q428,394 428,278 L428,66 C428,66 332,40 250,40 Z"
+        fill="none" stroke="#D9B44A" stroke-width="5"/>
+
+  <!-- ======= BANNER ======= -->
+  <!-- Main ribbon body -->
+  <path d="
+    M50,538
+    L68,518 L172,515
+    C188,513 205,508 220,501
+    L250,494 L280,501
+    C295,508 312,513 328,515
+    L432,518 L450,538
+    L450,572 C450,579 443,582 435,582
+    L328,580 C312,580 295,575 280,568
+    L250,560 L220,568
+    C205,575 188,580 172,580
+    L65,582 C57,582 50,579 50,572 Z
+  " fill="#1B2945" stroke="#D9B44A" stroke-width="4"/>
+
+  <!-- Left ribbon tail (shadow fold) -->
+  <path d="M50,538 L32,560 L55,554 L68,518 Z" fill="#111D30"/>
+  <!-- Right ribbon tail -->
+  <path d="M450,538 L468,560 L445,554 L432,518 Z" fill="#111D30"/>
+
+  <!-- SKILLPIPS text -->
+  <text
+    x="250" y="558"
+    text-anchor="middle"
+    dominant-baseline="middle"
+    font-family="Georgia, 'Times New Roman', serif"
+    font-size="43"
+    font-weight="bold"
+    fill="#D9B44A"
+    letter-spacing="5">SKILLPIPS</text>
+</svg>
