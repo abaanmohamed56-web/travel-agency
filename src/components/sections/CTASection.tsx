@@ -119,13 +119,11 @@ export function CTASection() {
         >
           <Link
             href="/auth/register"
-            className="group relative flex items-center gap-2 px-10 py-5 text-base font-bold text-[#080A0F] rounded-xl overflow-hidden min-w-[220px] justify-center"
+            className="group flex items-center gap-2 px-10 py-5 text-base font-bold text-[#080A0F] rounded-xl bg-gradient-to-r from-[#00D4FF] to-[#0099CC] hover:shadow-[0_0_30px_rgba(0,212,255,0.4)] transition-shadow duration-300 min-w-[220px] justify-center"
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-[#00D4FF] to-[#0099CC]" />
-            <div className="absolute inset-0 bg-gradient-to-r from-[#00D4FF] to-[#0099CC] blur-xl opacity-0 group-hover:opacity-60 transition-opacity scale-110" />
-            <Zap className="relative w-4 h-4" />
-            <span className="relative">Join SkillPips</span>
-            <ArrowRight className="relative w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            <Zap className="w-4 h-4" />
+            <span>Join SkillPips</span>
+            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </Link>
 
           <Link

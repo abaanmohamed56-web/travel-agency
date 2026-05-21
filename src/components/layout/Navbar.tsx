@@ -115,14 +115,10 @@ export function Navbar() {
               </Link>
               <Link
                 href="/auth/register"
-                className="group relative px-5 py-2 text-sm font-semibold text-[#080A0F] rounded-lg overflow-hidden"
+                className="group flex items-center gap-1.5 px-5 py-2 text-sm font-semibold text-[#080A0F] rounded-lg bg-gradient-to-r from-[#00D4FF] to-[#0099CC] hover:shadow-[0_0_20px_rgba(0,212,255,0.35)] transition-shadow duration-300"
               >
-                <div className="absolute inset-0 bg-gradient-to-r from-[#00D4FF] to-[#0099CC] transition-all group-hover:scale-105" />
-                <div className="absolute inset-0 bg-gradient-to-r from-[#00D4FF] to-[#0099CC] blur-lg opacity-0 group-hover:opacity-50 transition-opacity" />
-                <span className="relative flex items-center gap-1.5">
-                  <Zap className="w-3.5 h-3.5" />
-                  Join VIP
-                </span>
+                <Zap className="w-3.5 h-3.5" />
+                Join VIP
               </Link>
             </div>
 

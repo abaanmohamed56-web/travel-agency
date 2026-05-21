@@ -300,18 +300,15 @@ export function HeroSection() {
         >
           <Link
             href="/auth/register"
-            className="group relative flex items-center gap-2 px-8 py-4 text-base font-semibold text-[#080A0F] rounded-xl overflow-hidden"
+            className="group flex items-center gap-2 px-8 py-4 text-base font-semibold text-[#080A0F] rounded-xl bg-gradient-to-r from-[#00D4FF] to-[#0099CC] hover:shadow-[0_0_30px_rgba(0,212,255,0.4)] transition-shadow duration-300"
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-[#00D4FF] to-[#0099CC]" />
-            <div className="absolute inset-0 bg-gradient-to-r from-[#00D4FF] to-[#0099CC] blur-xl opacity-0 group-hover:opacity-60 transition-opacity duration-300 scale-110" />
-            <span className="relative">Join VIP</span>
-            <ArrowRight className="relative w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            <span>Join VIP</span>
+            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </Link>
 
-          <button className="group flex items-center gap-3 px-6 py-4 text-base text-white/70 hover:text-white transition-colors">
-            <div className="relative w-11 h-11 rounded-full glass border border-white/10 flex items-center justify-center group-hover:border-[#00D4FF]/40 transition-colors">
-              <Play className="w-4 h-4 fill-current ml-0.5" />
-              <div className="absolute inset-0 rounded-full bg-[#00D4FF]/0 group-hover:bg-[#00D4FF]/10 transition-colors" />
+          <button className="group flex items-center gap-3 px-4 py-3 text-base text-white/70 hover:text-white rounded-xl border border-white/10 hover:border-white/25 transition-all">
+            <div className="w-8 h-8 rounded-full bg-white/5 border border-white/15 flex items-center justify-center group-hover:border-[#00D4FF]/40 transition-colors">
+              <Play className="w-3.5 h-3.5 fill-current ml-0.5" />
             </div>
             Watch Demo
           </button>
@@ -323,7 +320,7 @@ export function HeroSection() {
           variants={textVariants}
           initial="hidden"
           animate="visible"
-          className="flex items-center gap-8 mt-14 pt-8 border-t border-white/5"
+          className="grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-10 mt-14 pt-8 border-t border-white/5 w-full max-w-xs sm:max-w-none"
         >
           {[
             { value: "20K+", label: "Members" },

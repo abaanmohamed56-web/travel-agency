@@ -77,11 +77,10 @@ export default function ForgotPasswordPage() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="group relative w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-semibold text-sm text-[#080A0F] overflow-hidden disabled:opacity-70"
+                  className="group w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-semibold text-sm text-[#080A0F] bg-gradient-to-r from-[#00D4FF] to-[#0099CC] disabled:opacity-70 hover:shadow-[0_0_20px_rgba(0,212,255,0.35)] transition-shadow duration-300"
                 >
-                  <div className="absolute inset-0 bg-gradient-to-r from-[#00D4FF] to-[#0099CC]" />
-                  <span className="relative">{loading ? "Sending..." : "Send Reset Link"}</span>
-                  {!loading && <ArrowRight className="relative w-4 h-4" />}
+                  <span>{loading ? "Sending..." : "Send Reset Link"}</span>
+                  {!loading && <ArrowRight className="w-4 h-4" />}
                 </button>
               </form>
               <div className="mt-6 text-center">
