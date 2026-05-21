@@ -51,7 +51,7 @@ export function RegisterForm() {
   };
 
   return (
-    <div className="min-h-screen bg-[#080A0F] flex items-center justify-center p-4 relative overflow-hidden">
+    <div className="min-h-[100dvh] bg-[#080A0F] flex items-center justify-center p-4 relative overflow-hidden">
       <div className="absolute inset-0">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-[radial-gradient(ellipse_at_center,rgba(0,212,255,0.08)_0%,transparent_70%)]" />
       </div>
@@ -62,7 +62,7 @@ export function RegisterForm() {
         transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
         className="relative w-full max-w-lg"
       >
-        <div className="card-premium rounded-2xl p-8 shadow-2xl">
+        <div className="card-premium rounded-2xl p-5 sm:p-8 shadow-2xl">
           <div className="flex items-center gap-3 mb-6">
             <Image src="/logo.svg" alt="SkillPips" width={36} height={44} />
             <span className="font-syne font-bold text-xl text-white">
@@ -136,7 +136,7 @@ export function RegisterForm() {
                   {...register("name")}
                   type="text"
                   placeholder="John Smith"
-                  className="w-full pl-10 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder:text-white/25 focus:outline-none focus:border-[#00D4FF]/50 transition-colors"
+                  className="w-full pl-10 pr-4 py-3 rounded-xl bg-white/8 border border-white/20 text-white text-sm placeholder:text-white/30 focus:outline-none focus:border-[#00D4FF]/60 transition-colors"
                 />
               </div>
               {errors.name && <p className="text-xs text-red-400 mt-1">{errors.name.message}</p>}
@@ -150,7 +150,7 @@ export function RegisterForm() {
                   {...register("email")}
                   type="email"
                   placeholder="you@example.com"
-                  className="w-full pl-10 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder:text-white/25 focus:outline-none focus:border-[#00D4FF]/50 transition-colors"
+                  className="w-full pl-10 pr-4 py-3 rounded-xl bg-white/8 border border-white/20 text-white text-sm placeholder:text-white/30 focus:outline-none focus:border-[#00D4FF]/60 transition-colors"
                 />
               </div>
               {errors.email && <p className="text-xs text-red-400 mt-1">{errors.email.message}</p>}
@@ -164,7 +164,7 @@ export function RegisterForm() {
                   {...register("password")}
                   type={showPassword ? "text" : "password"}
                   placeholder="Min. 8 characters"
-                  className="w-full pl-10 pr-10 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder:text-white/25 focus:outline-none focus:border-[#00D4FF]/50 transition-colors"
+                  className="w-full pl-10 pr-10 py-3 rounded-xl bg-white/8 border border-white/20 text-white text-sm placeholder:text-white/30 focus:outline-none focus:border-[#00D4FF]/60 transition-colors"
                 />
                 <button
                   type="button"
