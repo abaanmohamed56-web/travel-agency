@@ -7,9 +7,6 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "**.githubusercontent.com" },
     ],
   },
-  experimental: {
-    optimizeCss: true,
-  },
 };
 
 export default nextConfig;
