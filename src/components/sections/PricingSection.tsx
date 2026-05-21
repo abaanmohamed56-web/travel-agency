@@ -93,7 +93,7 @@ function PricingCard({
       transition={{ delay: index * 0.12, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
       className={`relative flex flex-col rounded-2xl p-8 ${
         plan.popular
-          ? "border-2 scale-[1.03]"
+          ? "border-2 md:scale-[1.03]"
           : "border border-white/8"
       }`}
       style={{

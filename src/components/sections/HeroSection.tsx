@@ -180,7 +180,7 @@ export function HeroSection() {
   return (
     <section className="relative min-h-screen flex flex-col overflow-hidden bg-[#080A0F]">
       {/* Radial gradient background */}
-      <div className="absolute inset-0">
+      <div className="absolute inset-0 overflow-hidden">
         <motion.div
           style={{ x: bgX, y: bgY }}
           className="absolute inset-0"
