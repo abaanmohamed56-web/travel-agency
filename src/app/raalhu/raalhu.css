@@ -1,0 +1,180 @@
+/*
+ * Raalhu AI theme scope.
+ *
+ * CSS imported from a nested layout is bundled globally, so every selector in
+ * this file MUST start with `.raalhu` to avoid leaking into the SkillPips app
+ * that shares this Next.js instance. The variables re-declare the HSL token
+ * contract consumed by tailwind.config.js (bg-background, text-primary, ...),
+ * so all token utilities resolve to the Raalhu palette inside the subtree.
+ */
+
+/*
+ * globals.css ships an UNLAYERED `* { padding: 0; margin: 0 }` reset that
+ * defeats every layered Tailwind spacing utility (unlayered author CSS beats
+ * all @layer styles). SkillPips' current look depends on that quirk, so it
+ * can't be fixed globally. Inside the Raalhu subtree we roll those two
+ * properties back to the cascade layers, where Tailwind's preflight still
+ * zeroes them and utilities win as designed.
+ */
+.raalhu,
+.raalhu * {
+  padding: revert-layer;
+  margin: revert-layer;
+}
+
+.raalhu {
+  /* Ocean-dark palette, accent #1EA7FF */
+  --background: 216 30% 4%;
+  --foreground: 210 25% 96%;
+  --card: 217 27% 7%;
+  --card-foreground: 210 25% 96%;
+  --popover: 217 28% 6%;
+  --popover-foreground: 210 25% 96%;
+  --primary: 203 100% 56%;
+  --primary-foreground: 216 30% 4%;
+  --secondary: 217 22% 11%;
+  --secondary-foreground: 210 18% 82%;
+  --muted: 217 22% 11%;
+  --muted-foreground: 214 14% 56%;
+  --accent: 203 100% 56%;
+  --accent-foreground: 216 30% 4%;
+  --destructive: 0 72% 55%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 217 22% 14%;
+  --input: 217 22% 12%;
+  --ring: 203 100% 56%;
+  --radius: 0.75rem;
+  --chart-1: 203 100% 56%;
+  --chart-2: 187 85% 48%;
+  --chart-3: 222 90% 66%;
+  --chart-4: 168 70% 45%;
+  --chart-5: 258 82% 68%;
+
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  font-family: var(--font-inter), system-ui, sans-serif;
+}
+
+.raalhu ::selection {
+  background: rgba(30, 167, 255, 0.35);
+}
+
+.raalhu ::-webkit-scrollbar-thumb {
+  background: rgba(30, 167, 255, 0.25);
+}
+.raalhu ::-webkit-scrollbar-thumb:hover {
+  background: rgba(30, 167, 255, 0.5);
+}
+
+/* Glass surfaces */
+.raalhu .r-glass {
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.raalhu .r-glass-deep {
+  background: rgba(8, 12, 20, 0.75);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* Glows */
+.raalhu .r-glow {
+  box-shadow:
+    0 0 30px rgba(30, 167, 255, 0.25),
+    0 0 60px rgba(30, 167, 255, 0.08);
+}
+
+.raalhu .r-glow-soft {
+  box-shadow: 0 0 24px rgba(30, 167, 255, 0.12);
+}
+
+.raalhu .r-text-glow {
+  text-shadow: 0 0 24px rgba(30, 167, 255, 0.45);
+}
+
+/* Gradient text */
+.raalhu .r-gradient-text {
+  background: linear-gradient(120deg, #eaf6ff 20%, #1ea7ff 55%, #7fd0ff 85%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Page backdrops */
+.raalhu .r-hero-backdrop {
+  background:
+    radial-gradient(ellipse 70% 45% at 50% -5%, rgba(30, 167, 255, 0.16) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 30% at 85% 25%, rgba(90, 120, 255, 0.08) 0%, transparent 55%),
+    linear-gradient(180deg, hsl(216 30% 4%) 0%, hsl(217 28% 5%) 100%);
+}
+
+.raalhu .r-grid-backdrop {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 30%, transparent 75%);
+  -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 30%, transparent 75%);
+}
+
+/* Subtle divider gradient */
+.raalhu .r-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.12), transparent);
+}
+
+/* Keyframe animations (namespaced to avoid config edits) */
+@keyframes r-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes r-pulse-dot {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.45;
+    transform: scale(0.85);
+  }
+}
+
+@keyframes r-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.raalhu .r-fade-up {
+  animation: r-fade-up 0.6s ease-out both;
+}
+
+.raalhu .r-pulse-dot {
+  animation: r-pulse-dot 2s ease-in-out infinite;
+}
+
+.raalhu .r-shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.03) 25%,
+    rgba(255, 255, 255, 0.08) 50%,
+    rgba(255, 255, 255, 0.03) 75%
+  );
+  background-size: 200% 100%;
+  animation: r-shimmer 1.8s linear infinite;
+}

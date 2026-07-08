@@ -1,36 +1,58 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Two apps, one repo
 
-## Getting Started
+This repository hosts **two products** in a single Next.js 16 application:
 
-First, run the development server:
+| App | What it is | URL space |
+| --- | --- | --- |
+| **SkillPips** | Forex education & trading-signals SaaS | `/`, `/dashboard`, `/admin` |
+| **Raalhu AI** | Autonomous AI marketing platform | `/raalhu`, `/raalhu/dashboard` |
+
+They share one Postgres database (Raalhu tables are prefixed `raalhu_`), one
+NextAuth user pool, and the design-token contract in `tailwind.config.js` —
+and are otherwise isolated. See `docs/raalhu/architecture.md` for the rules
+that keep them from stepping on each other.
+
+## Getting started
 
 ```bash
+npm install
+cp .env.example .env         # fill in at least DATABASE_URL and NEXTAUTH_SECRET
+
+# local database (Postgres 16 via Docker)
+docker compose up -d db
+npx prisma migrate dev       # apply migrations
+npm run db:seed:raalhu       # optional: demo Raalhu org + data
+
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) for SkillPips or
+[http://localhost:3000/raalhu](http://localhost:3000/raalhu) for Raalhu AI.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Environment variables
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+`.env.example` documents every variable and which app owns it. Highlights:
 
-## Learn More
+- `DATABASE_URL` — runtime connection (Supabase transaction pooler is fine).
+- `DIRECT_URL` — non-pooled connection for `prisma migrate` (Supabase port 5432).
+- `ANTHROPIC_API_KEY` — powers Raalhu's agent team; optional in dev
+  (the UI degrades gracefully with a setup banner).
+- `STRIPE_*` — SkillPips billing only.
 
-To learn more about Next.js, take a look at the following resources:
+## Useful commands
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+npm run dev            # dev server (Turbopack)
+npm run build          # prisma generate + production build
+npx tsc --noEmit       # typecheck
+npx prisma studio      # browse the database
+npm run db:seed:raalhu # seed demo Raalhu workspace
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Documentation
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `docs/raalhu/architecture.md` — Raalhu system design and isolation rules
+- `docs/raalhu/data-model.md` — multi-tenant schema ERD
+- `docs/raalhu/agents.md` — agent hierarchy and how to add a specialist
+- `AGENTS.md` — read this before writing Next.js code (Next 16 conventions
+  live in `node_modules/next/dist/docs/`)
