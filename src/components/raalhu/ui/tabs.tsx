@@ -10,14 +10,19 @@ const TabsList = React.forwardRef<
   React.ComponentRef<typeof TabsPrimitive.List>,
   React.ComponentPropsWithoutRef<typeof TabsPrimitive.List>
 >(({ className, ...props }, ref) => (
-  <TabsPrimitive.List
-    ref={ref}
-    className={cn(
-      "inline-flex h-10 items-center justify-center gap-1 rounded-lg border border-border bg-secondary/50 p-1 text-muted-foreground",
-      className
-    )}
-    {...props}
-  />
+  // Scrolls horizontally instead of silently clipping when there are more
+  // tabs than fit — the global overflow-x:hidden on <body> would otherwise
+  // just cut off whatever doesn't fit, with no way to reach it.
+  <div className="no-scrollbar max-w-full overflow-x-auto">
+    <TabsPrimitive.List
+      ref={ref}
+      className={cn(
+        "inline-flex h-10 w-max items-center justify-center gap-1 rounded-lg border border-border bg-secondary/50 p-1 text-muted-foreground",
+        className
+      )}
+      {...props}
+    />
+  </div>
 ));
 TabsList.displayName = TabsPrimitive.List.displayName;
 

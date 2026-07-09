@@ -204,11 +204,11 @@ export function CommandCenterChat({ aiConfigured }: { aiConfigured: boolean }) {
             placeholder={
               aiConfigured
                 ? "Tell your AI team what you need…"
-                : "AI team offline — configure the API key to begin"
+                : "AI team offline — add your API key"
             }
             disabled={!aiConfigured || streaming}
             rows={1}
-            className="min-h-[44px] resize-none"
+            className="min-h-[44px] resize-none overflow-hidden"
           />
           <Button
             type="submit"

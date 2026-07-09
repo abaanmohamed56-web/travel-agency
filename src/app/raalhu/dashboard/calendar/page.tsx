@@ -61,7 +61,7 @@ export default async function CalendarPage({
         title="Content Calendar"
         description="Everything scheduled to go out, month by month."
         actions={
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <Link
               href={`?month=${prev}`}
               aria-label="Previous month"
@@ -69,7 +69,7 @@ export default async function CalendarPage({
             >
               <ChevronLeft />
             </Link>
-            <span className="min-w-32 text-center text-sm font-medium">
+            <span className="min-w-24 text-center text-sm font-medium sm:min-w-32">
               {format(monthStart, "MMMM yyyy")}
             </span>
             <Link
