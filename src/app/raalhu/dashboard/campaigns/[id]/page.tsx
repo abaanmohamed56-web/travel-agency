@@ -4,6 +4,7 @@ import { ArrowLeft, Bot } from "lucide-react";
 import { requireRaalhuContext } from "@/modules/raalhu/auth/context";
 import { getCampaign } from "@/modules/raalhu/db/queries";
 import { isHiggsfieldConfigured } from "@/lib/higgsfield";
+import { listConnectedAccounts } from "@/modules/raalhu/lib/social";
 import { Badge } from "@/components/raalhu/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/raalhu/ui/card";
 import { CampaignStatusSelect } from "@/components/raalhu/dashboard/CampaignStatusSelect";
@@ -19,9 +20,13 @@ export default async function CampaignDetailPage({
 }) {
   const { org } = await requireRaalhuContext();
   const { id } = await params;
-  const campaign = await getCampaign(org.id, id);
+  const [campaign, socialAccounts] = await Promise.all([
+    getCampaign(org.id, id),
+    listConnectedAccounts(org.id),
+  ]);
   if (!campaign) notFound();
   const mediaEnabled = isHiggsfieldConfigured();
+  const connectedProviders = socialAccounts.map((a) => a.provider);
 
   const fmt = (d: Date | null) =>
     d?.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) ?? "—";
@@ -111,13 +116,18 @@ export default async function CampaignDetailPage({
               </div>
               <ContentMediaControls
                 contentId={item.id}
+                channel={item.channel}
                 mediaEnabled={mediaEnabled}
+                connectedProviders={connectedProviders}
                 initial={{
                   imageStatus: item.imageStatus,
                   imageUrl: item.imageUrl,
                   videoStatus: item.videoStatus,
                   videoUrl: item.videoUrl,
                   mediaError: item.mediaError,
+                  publishStatus: item.publishStatus,
+                  externalPostUrl: item.externalPostUrl,
+                  publishError: item.publishError,
                 }}
               />
             </div>

@@ -22,6 +22,7 @@ model Organization {
   notifications   RaalhuNotification[]
   auditLogs       AuditLog[]
   apiKeys         ApiKey[]
+  socialAccounts  SocialAccount[]
 
   @@map("raalhu_organizations")
 }
@@ -221,6 +222,13 @@ model ContentItem {
   videoJobId  String?
   mediaError  String?     @db.Text
 
+  // Direct publishing to the connected social account matching `channel`.
+  publishStatus   MediaStatus @default(NONE)
+  publishJobId    String?
+  externalPostId  String?
+  externalPostUrl String?
+  publishError    String?     @db.Text
+
   organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   campaign     Campaign?    @relation(fields: [campaignId], references: [id], onDelete: SetNull)
 
@@ -353,4 +361,30 @@ model ApiKey {
   organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 
   @@map("raalhu_api_keys")
+}
+
+enum SocialProvider {
+  INSTAGRAM
+  TIKTOK
+}
+
+// One connected account per provider per org. Tokens are encrypted at rest
+// (src/lib/crypto.ts) — never selected into a client-facing response.
+model SocialAccount {
+  id                String         @id @default(cuid())
+  organizationId    String
+  provider          SocialProvider
+  externalAccountId String
+  displayName       String?
+  accessToken       String         @db.Text
+  refreshToken      String?        @db.Text
+  expiresAt         DateTime?
+  connectedById     String
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, provider])
+  @@map("raalhu_social_accounts")
 }

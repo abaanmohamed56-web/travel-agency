@@ -18,6 +18,7 @@ erDiagram
     Organization ||--o{ RaalhuNotification : has
     Organization ||--o{ AuditLog : has
     Organization ||--o{ ApiKey : has
+    Organization ||--o{ SocialAccount : has
     Conversation ||--o{ ChatMessage : contains
     Conversation ||--o{ AgentRun : triggers
     AgentRun ||--o{ AgentTask : "delegations"
@@ -59,6 +60,7 @@ erDiagram
         datetime scheduledAt "calendar index"
         enum imageStatus "NONE PENDING READY FAILED"
         enum videoStatus "NONE PENDING READY FAILED"
+        enum publishStatus "NONE PENDING READY FAILED"
     }
     Contact {
         enum stage "LEAD MQL SQL CUSTOMER CHURNED"
@@ -66,6 +68,11 @@ erDiagram
     ContactActivity {
         enum type "NOTE STAGE_CHANGE EMAIL CALL"
         string body
+    }
+    SocialAccount {
+        enum provider "INSTAGRAM TIKTOK"
+        string externalAccountId
+        string accessToken "encrypted"
     }
 ```
 
@@ -82,6 +89,16 @@ Notes:
   short bounded poll at request time or by the client polling
   `GET /api/raalhu/content/[id]/media-status`. Video is image-to-video only,
   so it requires an existing image on the same item.
+- `SocialAccount` is one connected account per provider per org
+  (`@@unique([organizationId, provider])`) — `src/lib/meta.ts` (Instagram
+  Graph API) and `src/lib/tiktok.ts` (Content Posting API) handle OAuth and
+  publishing; `src/modules/raalhu/lib/social.ts` dispatches by matching a
+  `ContentItem.channel` string (contains "instagram"/"tiktok") to a connected
+  provider. Instagram publishes an existing image or video; TikTok publishes
+  video only. Tokens are AES-256-GCM encrypted (`src/lib/crypto.ts`) and never
+  selected into API responses. `ContentItem.publishStatus`/`publishJobId`
+  track TikTok's async publish job the same way image/video generation is
+  tracked — polled via the same media-status endpoint.
 - `ContactActivity.@@index([contactId, createdAt])` powers the CRM timeline;
   stage changes on a `Contact` are auto-logged as a `STAGE_CHANGE` activity.
 - Migrations live in `prisma/schema/migrations/` (`init_baseline` = base

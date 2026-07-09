@@ -1,10 +1,12 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Film, ImagePlus, Loader2, RotateCw } from "lucide-react";
+import { ExternalLink, Film, ImagePlus, Loader2, RotateCw, Send } from "lucide-react";
 import { Button } from "@/components/raalhu/ui/button";
+import { Badge } from "@/components/raalhu/ui/badge";
 
 type MediaStatus = "NONE" | "PENDING" | "READY" | "FAILED";
+type Provider = "INSTAGRAM" | "TIKTOK";
 
 interface MediaState {
   imageStatus: MediaStatus;
@@ -12,6 +14,9 @@ interface MediaState {
   videoStatus: MediaStatus;
   videoUrl: string | null;
   mediaError: string | null;
+  publishStatus: MediaStatus;
+  externalPostUrl: string | null;
+  publishError: string | null;
 }
 
 async function postJson(url: string) {
@@ -20,20 +25,34 @@ async function postJson(url: string) {
   return { ok: res.ok, data };
 }
 
+function channelToProvider(channel: string | null): Provider | null {
+  const c = (channel ?? "").toLowerCase();
+  if (c.includes("instagram")) return "INSTAGRAM";
+  if (c.includes("tiktok")) return "TIKTOK";
+  return null;
+}
+
 export function ContentMediaControls({
   contentId,
+  channel,
   mediaEnabled,
+  connectedProviders,
   initial,
 }: {
   contentId: string;
+  channel: string | null;
   mediaEnabled: boolean;
+  connectedProviders: Provider[];
   initial: MediaState;
 }) {
   const [state, setState] = useState<MediaState>(initial);
-  const [busy, setBusy] = useState<"image" | "video" | null>(null);
+  const [busy, setBusy] = useState<"image" | "video" | "publish" | null>(null);
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  const pending = state.imageStatus === "PENDING" || state.videoStatus === "PENDING";
+  const pending =
+    state.imageStatus === "PENDING" ||
+    state.videoStatus === "PENDING" ||
+    state.publishStatus === "PENDING";
 
   useEffect(() => {
     if (!pending) {
@@ -50,6 +69,9 @@ export function ContentMediaControls({
         videoStatus: contentItem.videoStatus,
         videoUrl: contentItem.videoUrl,
         mediaError: contentItem.mediaError,
+        publishStatus: contentItem.publishStatus,
+        externalPostUrl: contentItem.externalPostUrl,
+        publishError: contentItem.publishError,
       });
     }, 3000);
     return () => {
@@ -57,7 +79,17 @@ export function ContentMediaControls({
     };
   }, [pending, contentId]);
 
-  if (!mediaEnabled && state.imageStatus === "NONE" && state.videoStatus === "NONE") {
+  const provider = channelToProvider(channel);
+  const providerConnected = provider ? connectedProviders.includes(provider) : false;
+  const hasPublishableMedia =
+    provider === "INSTAGRAM" ? !!(state.imageUrl || state.videoUrl) : provider === "TIKTOK" ? !!state.videoUrl : false;
+
+  if (
+    !mediaEnabled &&
+    state.imageStatus === "NONE" &&
+    state.videoStatus === "NONE" &&
+    !providerConnected
+  ) {
     return null;
   }
 
@@ -85,6 +117,20 @@ export function ContentMediaControls({
         videoStatus: data.contentItem.videoStatus,
         videoUrl: data.contentItem.videoUrl,
         mediaError: data.contentItem.mediaError,
+      }));
+    }
+  }
+
+  async function publish() {
+    setBusy("publish");
+    const { ok, data } = await postJson(`/api/raalhu/content/${contentId}/publish`);
+    setBusy(null);
+    if (ok && data.contentItem) {
+      setState((s) => ({
+        ...s,
+        publishStatus: data.contentItem.publishStatus,
+        externalPostUrl: data.contentItem.externalPostUrl,
+        publishError: data.contentItem.publishError,
       }));
     }
   }
@@ -157,6 +203,42 @@ export function ContentMediaControls({
 
       {state.mediaError && (
         <span className="text-xs text-red-400">{state.mediaError}</span>
+      )}
+
+      {providerConnected &&
+        (state.publishStatus === "READY" ? (
+          state.externalPostUrl ? (
+            <a
+              href={state.externalPostUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-1 text-xs text-primary hover:underline"
+            >
+              <ExternalLink className="size-3" /> Published
+            </a>
+          ) : (
+            <Badge variant="success">Published</Badge>
+          )
+        ) : (
+          hasPublishableMedia && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={publish}
+              disabled={busy !== null || state.publishStatus === "PENDING"}
+            >
+              {state.publishStatus === "PENDING" ? (
+                <Loader2 className="animate-spin" />
+              ) : (
+                <Send />
+              )}
+              {state.publishStatus === "PENDING" ? "Publishing…" : `Publish to ${provider === "INSTAGRAM" ? "Instagram" : "TikTok"}`}
+            </Button>
+          )
+        ))}
+
+      {state.publishError && (
+        <span className="text-xs text-red-400">{state.publishError}</span>
       )}
     </div>
   );

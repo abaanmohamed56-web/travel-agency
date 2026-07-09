@@ -5,6 +5,9 @@ import {
   listMembers,
 } from "@/modules/raalhu/db/queries";
 import { prisma } from "@/lib/prisma";
+import { isMetaConfigured } from "@/lib/meta";
+import { isTiktokConfigured } from "@/lib/tiktok";
+import { listConnectedAccounts } from "@/modules/raalhu/lib/social";
 import { PageHeader } from "@/components/raalhu/dashboard/PageHeader";
 import { Avatar } from "@/components/raalhu/ui/avatar";
 import { Badge } from "@/components/raalhu/ui/badge";
@@ -21,19 +24,26 @@ import { MemberRoleSelect } from "@/components/raalhu/dashboard/MemberRoleSelect
 import { RemoveMemberButton } from "@/components/raalhu/dashboard/RemoveMemberButton";
 import { CreateApiKeyDialog } from "@/components/raalhu/dashboard/CreateApiKeyDialog";
 import { RevokeApiKeyButton } from "@/components/raalhu/dashboard/RevokeApiKeyButton";
+import { ConnectedAccountsCard } from "@/components/raalhu/dashboard/ConnectedAccountsCard";
 
 export const metadata = { title: "Settings" };
 
-export default async function SettingsPage() {
+export default async function SettingsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ tab?: string; connected?: string; error?: string }>;
+}) {
   const { org, membership } = await requireRaalhuContext();
   const isAdmin = hasRole(membership, "ADMIN");
-  const [profile, members, apiKeys] = await Promise.all([
+  const { tab, connected, error } = await searchParams;
+  const [profile, members, apiKeys, socialAccounts] = await Promise.all([
     getBusinessProfile(org.id),
     listMembers(org.id),
     prisma.apiKey.findMany({
       where: { organizationId: org.id, revokedAt: null },
       orderBy: { createdAt: "desc" },
     }),
+    listConnectedAccounts(org.id),
   ]);
 
   const profileRows: [string, string | null][] = [
@@ -52,11 +62,12 @@ export default async function SettingsPage() {
         description={`Workspace configuration for ${org.name}.`}
       />
 
-      <Tabs defaultValue="profile">
+      <Tabs defaultValue={tab === "social" ? "social" : "profile"}>
         <TabsList>
           <TabsTrigger value="profile">Business profile</TabsTrigger>
           <TabsTrigger value="team">Team</TabsTrigger>
           <TabsTrigger value="api-keys">API keys</TabsTrigger>
+          <TabsTrigger value="social">Connected accounts</TabsTrigger>
         </TabsList>
 
         <TabsContent value="profile">
@@ -182,6 +193,16 @@ export default async function SettingsPage() {
               )}
             </CardContent>
           </Card>
+        </TabsContent>
+
+        <TabsContent value="social">
+          <ConnectedAccountsCard
+            accounts={socialAccounts}
+            isAdmin={isAdmin}
+            connected={connected}
+            error={error}
+            configured={{ INSTAGRAM: isMetaConfigured(), TIKTOK: isTiktokConfigured() }}
+          />
         </TabsContent>
       </Tabs>
     </main>

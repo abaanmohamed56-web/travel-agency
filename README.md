@@ -35,6 +35,12 @@ Open [http://localhost:3000](http://localhost:3000) — it redirects to
 - `HF_CREDENTIALS` — powers AI image/video generation (Higgsfield, format
   `KEY_ID:KEY_SECRET`); optional — without it, generate buttons are hidden
   and the agent team skips visuals.
+- `META_APP_ID` / `META_APP_SECRET` — Instagram publishing (Meta Graph API).
+  Requires a Meta Developer app and, for public posting, App Review.
+- `TIKTOK_CLIENT_KEY` / `TIKTOK_CLIENT_SECRET` — TikTok publishing (Content
+  Posting API, video only). Unaudited apps can only post `SELF_ONLY`.
+- `SOCIAL_TOKEN_ENCRYPTION_KEY` — any string; encrypts stored Instagram/TikTok
+  OAuth tokens at rest.
 
 ## Useful commands
 
