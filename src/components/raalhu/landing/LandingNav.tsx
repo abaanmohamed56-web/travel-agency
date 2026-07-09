@@ -40,13 +40,13 @@ export function LandingNav() {
         </div>
         <div className="flex items-center gap-3">
           <Link
-            href="/auth/login?callbackUrl=/raalhu/dashboard"
+            href="/raalhu/login"
             className={buttonVariants({ variant: "ghost", size: "sm" })}
           >
             Sign in
           </Link>
           <Link
-            href="/auth/register"
+            href="/raalhu/register"
             className={buttonVariants({ size: "sm" })}
           >
             Get started

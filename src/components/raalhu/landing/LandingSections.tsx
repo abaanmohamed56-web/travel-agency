@@ -155,7 +155,7 @@ export function LandingSections() {
               Set up your business profile in two minutes. Your AI marketing team takes it from there.
             </p>
             <Link
-              href="/auth/register"
+              href="/raalhu/register"
               className={cn(buttonVariants({ size: "lg" }), "group relative mt-8")}
             >
               Get started free

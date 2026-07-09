@@ -68,7 +68,7 @@ export function Hero() {
             className="mt-9 flex flex-col items-center gap-4 sm:flex-row"
           >
             <Link
-              href="/auth/register"
+              href="/raalhu/register"
               className={cn(buttonVariants({ size: "lg" }), "group")}
             >
               Start growing
