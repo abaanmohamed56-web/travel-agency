@@ -5,6 +5,9 @@ import { RegisterForm } from "@/components/raalhu/auth/RegisterForm";
 export const metadata = { title: "Create account" };
 
 export default function RaalhuRegisterPage() {
+  const googleConfigured = Boolean(
+    process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET
+  );
   return (
     <AuthShell
       title="Create your account"
@@ -18,7 +21,7 @@ export default function RaalhuRegisterPage() {
         </>
       }
     >
-      <RegisterForm />
+      <RegisterForm googleConfigured={googleConfigured} />
     </AuthShell>
   );
 }

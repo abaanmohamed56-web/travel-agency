@@ -6,6 +6,9 @@ import { LoginForm } from "@/components/raalhu/auth/LoginForm";
 export const metadata = { title: "Sign in" };
 
 export default function RaalhuLoginPage() {
+  const googleConfigured = Boolean(
+    process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET
+  );
   return (
     <AuthShell
       title="Welcome back"
@@ -20,7 +23,7 @@ export default function RaalhuLoginPage() {
       }
     >
       <Suspense>
-        <LoginForm />
+        <LoginForm googleConfigured={googleConfigured} />
       </Suspense>
     </AuthShell>
   );

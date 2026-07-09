@@ -7,8 +7,9 @@ import { Loader2 } from "lucide-react";
 import { Button } from "@/components/raalhu/ui/button";
 import { Input } from "@/components/raalhu/ui/input";
 import { Label } from "@/components/raalhu/ui/label";
+import { GoogleSignInButton } from "@/components/raalhu/auth/GoogleSignInButton";
 
-export function LoginForm() {
+export function LoginForm({ googleConfigured }: { googleConfigured: boolean }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") ?? "/raalhu/dashboard";
@@ -37,43 +38,55 @@ export function LoginForm() {
   }
 
   return (
-    <form onSubmit={onSubmit} className="space-y-4">
-      {error && (
-        <p
-          className="rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-red-400"
-          role="alert"
-        >
-          {error}
-        </p>
+    <div className="space-y-5">
+      {googleConfigured && (
+        <>
+          <GoogleSignInButton callbackUrl={callbackUrl} />
+          <div className="flex items-center gap-3 text-xs text-muted-foreground">
+            <div className="h-px flex-1 bg-border" />
+            or
+            <div className="h-px flex-1 bg-border" />
+          </div>
+        </>
       )}
-      <div className="space-y-2">
-        <Label htmlFor="email">Email</Label>
-        <Input
-          id="email"
-          type="email"
-          autoComplete="email"
-          required
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="you@company.com"
-        />
-      </div>
-      <div className="space-y-2">
-        <Label htmlFor="password">Password</Label>
-        <Input
-          id="password"
-          type="password"
-          autoComplete="current-password"
-          required
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="••••••••"
-        />
-      </div>
-      <Button type="submit" disabled={loading} className="w-full">
-        {loading && <Loader2 className="animate-spin" />}
-        {loading ? "Signing in…" : "Sign in"}
-      </Button>
-    </form>
+      <form onSubmit={onSubmit} className="space-y-4">
+        {error && (
+          <p
+            className="rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-red-400"
+            role="alert"
+          >
+            {error}
+          </p>
+        )}
+        <div className="space-y-2">
+          <Label htmlFor="email">Email</Label>
+          <Input
+            id="email"
+            type="email"
+            autoComplete="email"
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="you@company.com"
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="password">Password</Label>
+          <Input
+            id="password"
+            type="password"
+            autoComplete="current-password"
+            required
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="••••••••"
+          />
+        </div>
+        <Button type="submit" disabled={loading} className="w-full">
+          {loading && <Loader2 className="animate-spin" />}
+          {loading ? "Signing in…" : "Sign in"}
+        </Button>
+      </form>
+    </div>
   );
 }

@@ -30,6 +30,8 @@ Open [http://localhost:3000](http://localhost:3000) — it redirects to
   Supabase's **session pooler** (port 5432, `postgres.<project-ref>` user) —
   the direct host is IPv6-only and unreachable from most serverless egress.
 - `DIRECT_URL` — non-pooled connection for `prisma migrate` (Supabase port 5432).
+- `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` — "Continue with Google" on
+  login/register; optional, credentials login always works without it.
 - `ANTHROPIC_API_KEY` — powers the agent team; optional in dev (the UI
   degrades gracefully with a setup banner).
 - `HF_CREDENTIALS` — powers AI image/video generation (Higgsfield, format
