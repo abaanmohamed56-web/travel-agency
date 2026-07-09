@@ -44,10 +44,12 @@
   --input: 217 22% 12%;
   --ring: 203 100% 56%;
   --radius: 0.75rem;
-  --chart-1: 203 100% 56%;
-  --chart-2: 187 85% 48%;
+  /* Chart steps validated (OKLCH band, chroma, CVD, contrast) against the
+     dark surface via the dataviz palette validator — tune only with it. */
+  --chart-1: 203 95% 46%;
+  --chart-2: 187 85% 37%;
   --chart-3: 222 90% 66%;
-  --chart-4: 168 70% 45%;
+  --chart-4: 168 70% 36%;
   --chart-5: 258 82% 68%;
 
   background-color: hsl(var(--background));
