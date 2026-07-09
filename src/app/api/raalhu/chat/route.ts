@@ -7,6 +7,11 @@ import {
 } from "@/modules/raalhu/lib/rate-limit";
 import { chatRequestSchema } from "@/modules/raalhu/lib/validation";
 
+// Delegation chains (and, now, image generation tool calls) can run long —
+// match the platform function budget to the internal run timeout below so
+// Vercel doesn't truncate the SSE stream before RUN_TIMEOUT_MS ever fires.
+export const maxDuration = 300;
+
 const RUN_TIMEOUT_MS = 5 * 60 * 1000;
 
 const encoder = new TextEncoder();

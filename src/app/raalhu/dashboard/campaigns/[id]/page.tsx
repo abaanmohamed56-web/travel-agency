@@ -3,10 +3,12 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, Bot } from "lucide-react";
 import { requireRaalhuContext } from "@/modules/raalhu/auth/context";
 import { getCampaign } from "@/modules/raalhu/db/queries";
+import { isHiggsfieldConfigured } from "@/lib/higgsfield";
 import { Badge } from "@/components/raalhu/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/raalhu/ui/card";
 import { CampaignStatusSelect } from "@/components/raalhu/dashboard/CampaignStatusSelect";
 import { ContentStatusSelect } from "@/components/raalhu/dashboard/ContentStatusSelect";
+import { ContentMediaControls } from "@/components/raalhu/dashboard/ContentMediaControls";
 
 export const metadata = { title: "Campaign" };
 
@@ -19,6 +21,7 @@ export default async function CampaignDetailPage({
   const { id } = await params;
   const campaign = await getCampaign(org.id, id);
   if (!campaign) notFound();
+  const mediaEnabled = isHiggsfieldConfigured();
 
   const fmt = (d: Date | null) =>
     d?.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) ?? "—";
@@ -89,21 +92,34 @@ export default async function CampaignDetailPage({
           {campaign.contentItems.map((item) => (
             <div
               key={item.id}
-              className="flex items-center justify-between gap-4 rounded-lg border border-border bg-card/50 px-4 py-3"
+              className="space-y-3 rounded-lg border border-border bg-card/50 px-4 py-3"
             >
-              <div className="min-w-0">
-                <p className="truncate text-sm">{item.title}</p>
-                <p className="text-xs text-muted-foreground">
-                  {item.channel ?? "unassigned"} ·{" "}
-                  {item.scheduledAt
-                    ? item.scheduledAt.toLocaleDateString("en-US", {
-                        month: "short",
-                        day: "numeric",
-                      })
-                    : "unscheduled"}
-                </p>
+              <div className="flex items-center justify-between gap-4">
+                <div className="min-w-0">
+                  <p className="truncate text-sm">{item.title}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {item.channel ?? "unassigned"} ·{" "}
+                    {item.scheduledAt
+                      ? item.scheduledAt.toLocaleDateString("en-US", {
+                          month: "short",
+                          day: "numeric",
+                        })
+                      : "unscheduled"}
+                  </p>
+                </div>
+                <ContentStatusSelect contentId={item.id} status={item.status} />
               </div>
-              <ContentStatusSelect contentId={item.id} status={item.status} />
+              <ContentMediaControls
+                contentId={item.id}
+                mediaEnabled={mediaEnabled}
+                initial={{
+                  imageStatus: item.imageStatus,
+                  imageUrl: item.imageUrl,
+                  videoStatus: item.videoStatus,
+                  videoUrl: item.videoUrl,
+                  mediaError: item.mediaError,
+                }}
+              />
             </div>
           ))}
         </CardContent>

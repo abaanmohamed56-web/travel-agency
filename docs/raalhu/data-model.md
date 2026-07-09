@@ -57,6 +57,8 @@ erDiagram
         enum contentType "SOCIAL_POST BLOG_POST EMAIL AD_COPY SCRIPT OTHER"
         enum status "IDEA DRAFT REVIEW APPROVED SCHEDULED PUBLISHED"
         datetime scheduledAt "calendar index"
+        enum imageStatus "NONE PENDING READY FAILED"
+        enum videoStatus "NONE PENDING READY FAILED"
     }
     Contact {
         enum stage "LEAD MQL SQL CUSTOMER CHURNED"
@@ -74,6 +76,12 @@ Notes:
   only Raalhu relation on `User` is `memberships`.
 - `ContentItem.@@index([organizationId, scheduledAt])` powers the calendar;
   `Contact.@@unique([organizationId, email])` dedupes CRM contacts per org.
+- `ContentItem` image/video fields (`image*`/`video*`, `mediaError`) track
+  AI-generated visuals (Higgsfield, `src/lib/higgsfield.ts`). Generation is
+  async — jobs start `PENDING` and are moved to `READY`/`FAILED` either by a
+  short bounded poll at request time or by the client polling
+  `GET /api/raalhu/content/[id]/media-status`. Video is image-to-video only,
+  so it requires an existing image on the same item.
 - `ContactActivity.@@index([contactId, createdAt])` powers the CRM timeline;
   stage changes on a `Contact` are auto-logged as a `STAGE_CHANGE` activity.
 - Migrations live in `prisma/schema/migrations/` (`init_baseline` = base

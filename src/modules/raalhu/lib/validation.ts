@@ -160,6 +160,11 @@ export const createApiKeySchema = z.object({
 });
 export type CreateApiKeyInput = z.infer<typeof createApiKeySchema>;
 
+export const generateMediaSchema = z.object({
+  prompt: z.string().trim().min(1).max(2000).optional(),
+});
+export type GenerateMediaInput = z.infer<typeof generateMediaSchema>;
+
 export function slugify(value: string): string {
   return value
     .toLowerCase()

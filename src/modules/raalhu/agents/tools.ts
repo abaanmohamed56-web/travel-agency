@@ -1,6 +1,12 @@
 import type Anthropic from "@anthropic-ai/sdk";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
+import { isHiggsfieldConfigured } from "@/lib/higgsfield";
+import {
+  generateContentImage,
+  generateContentVideo,
+  MediaNotConfiguredError,
+} from "@/modules/raalhu/lib/media";
 import { AGENTS } from "./definitions";
 import type { AgentContext, AgentDefinition, DomainToolName } from "./types";
 
@@ -123,14 +129,61 @@ const DOMAIN_TOOLS: Record<DomainToolName, Anthropic.Tool> = {
       additionalProperties: false,
     },
   },
+  generate_content_image: {
+    name: "generate_content_image",
+    description:
+      "Generate a real AI image for an existing content item (from save_content_items) and attach it to the workspace calendar. Waits for the image to finish, then returns its URL. Only call this if image/video generation is available (you'll be told in your instructions if it isn't).",
+    input_schema: {
+      type: "object",
+      properties: {
+        contentItemId: {
+          type: "string",
+          description: "The id of a content item returned by save_content_items.",
+        },
+        prompt: {
+          type: "string",
+          description:
+            "A vivid, concrete visual description of the image to generate — not the caption, an image prompt (subject, setting, lighting, mood, style).",
+        },
+      },
+      required: ["contentItemId", "prompt"],
+      additionalProperties: false,
+    },
+  },
+  generate_content_video: {
+    name: "generate_content_video",
+    description:
+      "Animate a content item's existing image into a short video. Requires generate_content_image to have been called for that item first. Generation takes 1-3+ minutes, so this only starts the job — it does not wait. Tell the user it's generating and will appear on the Content Calendar shortly.",
+    input_schema: {
+      type: "object",
+      properties: {
+        contentItemId: {
+          type: "string",
+          description: "The id of a content item that already has a generated image.",
+        },
+        prompt: {
+          type: "string",
+          description: "How the image should move/animate (camera motion, subject motion).",
+        },
+      },
+      required: ["contentItemId", "prompt"],
+      additionalProperties: false,
+    },
+  },
 };
+
+const MEDIA_TOOL_NAMES: DomainToolName[] = ["generate_content_image", "generate_content_video"];
 
 export function buildTools(
   agent: AgentDefinition,
   depth: number,
   maxDepth: number
 ): Anthropic.Tool[] {
-  const tools = agent.tools.map((name) => DOMAIN_TOOLS[name]);
+  const mediaAvailable = isHiggsfieldConfigured();
+  const names = agent.tools.filter(
+    (name) => mediaAvailable || !MEDIA_TOOL_NAMES.includes(name)
+  );
+  const tools = names.map((name) => DOMAIN_TOOLS[name]);
   if (agent.children.length > 0 && depth < maxDepth) {
     tools.push(buildDelegateTool(agent));
   }
@@ -240,28 +293,29 @@ export async function executeDomainTool(
         });
         campaignId = campaign?.id ?? null;
       }
-      const created = await prisma.contentItem.createMany({
-        data: data.items.map((item) => {
-          const scheduledAt = item.scheduledAt
-            ? new Date(item.scheduledAt)
-            : null;
-          return {
-            organizationId: ctx.org.id,
-            createdById: ctx.userId,
-            campaignId,
-            title: item.title,
-            body: item.body ?? null,
-            contentType: item.contentType,
-            channel: item.channel?.toLowerCase() ?? null,
-            status: "DRAFT" as const,
-            scheduledAt:
-              scheduledAt && !Number.isNaN(scheduledAt.getTime())
-                ? scheduledAt
-                : null,
-            createdByAgent: true,
-          };
-        }),
-      });
+      // Individual creates (not createMany) so we can return each item's id —
+      // needed to target generate_content_image/video at a specific item.
+      const created = await Promise.all(
+        data.items.map((item) => {
+          const scheduledAt = item.scheduledAt ? new Date(item.scheduledAt) : null;
+          return prisma.contentItem.create({
+            data: {
+              organizationId: ctx.org.id,
+              createdById: ctx.userId,
+              campaignId,
+              title: item.title,
+              body: item.body ?? null,
+              contentType: item.contentType,
+              channel: item.channel?.toLowerCase() ?? null,
+              status: "DRAFT",
+              scheduledAt:
+                scheduledAt && !Number.isNaN(scheduledAt.getTime()) ? scheduledAt : null,
+              createdByAgent: true,
+            },
+            select: { id: true, title: true },
+          });
+        })
+      );
       await prisma.auditLog.create({
         data: {
           organizationId: ctx.org.id,
@@ -269,10 +323,53 @@ export async function executeDomainTool(
           actorAgentId: agentId,
           action: "content.created_by_agent",
           targetType: "ContentItem",
-          metadata: { runId: ctx.runId, count: created.count },
+          metadata: { runId: ctx.runId, count: created.length },
         },
       });
-      return `Saved ${created.count} content item(s) to the workspace calendar as drafts.`;
+      const list = created.map((c) => `- ${c.id}: "${c.title}"`).join("\n");
+      return `Saved ${created.length} content item(s) to the workspace calendar as drafts.\n${list}`;
+    }
+
+    case "generate_content_image": {
+      const data = z
+        .object({ contentItemId: z.string().min(1), prompt: z.string().min(1).max(2000) })
+        .parse(input);
+      try {
+        const item = await generateContentImage(ctx.org.id, data.contentItemId, data.prompt);
+        if (item.imageStatus === "READY" && item.imageUrl) {
+          return `Image ready: ${item.imageUrl}`;
+        }
+        if (item.imageStatus === "FAILED") {
+          return `Image generation failed: ${item.mediaError ?? "unknown error"}.`;
+        }
+        return "Image generation started and is still in progress — it will appear on the Content Calendar shortly.";
+      } catch (err) {
+        if (err instanceof MediaNotConfiguredError) {
+          return "Image generation is not configured for this workspace.";
+        }
+        return `Error starting image generation: ${err instanceof Error ? err.message : String(err)}`;
+      }
+    }
+
+    case "generate_content_video": {
+      const data = z
+        .object({ contentItemId: z.string().min(1), prompt: z.string().min(1).max(2000) })
+        .parse(input);
+      try {
+        const item = await generateContentVideo(ctx.org.id, data.contentItemId, data.prompt);
+        if (item.videoStatus === "FAILED") {
+          return `Video generation failed: ${item.mediaError ?? "unknown error"}.`;
+        }
+        return "Video generation started (takes 1-3+ minutes) — it will appear on the Content Calendar once ready.";
+      } catch (err) {
+        if (err instanceof MediaNotConfiguredError) {
+          return "Video generation is not configured for this workspace.";
+        }
+        if (err instanceof Error && err.message === "content_item_has_no_image") {
+          return "That content item has no image yet — call generate_content_image first.";
+        }
+        return `Error starting video generation: ${err instanceof Error ? err.message : String(err)}`;
+      }
     }
 
     default:

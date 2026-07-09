@@ -209,6 +209,18 @@ model ContentItem {
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
 
+  // AI-generated visuals (Higgsfield). Video is generated from the image, so
+  // it can only be requested once an image exists.
+  imageStatus MediaStatus @default(NONE)
+  imageUrl    String?
+  imagePrompt String?     @db.Text
+  imageJobId  String?
+  videoStatus MediaStatus @default(NONE)
+  videoUrl    String?
+  videoPrompt String?     @db.Text
+  videoJobId  String?
+  mediaError  String?     @db.Text
+
   organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   campaign     Campaign?    @relation(fields: [campaignId], references: [id], onDelete: SetNull)
 
@@ -233,6 +245,13 @@ enum ContentStatus {
   APPROVED
   SCHEDULED
   PUBLISHED
+}
+
+enum MediaStatus {
+  NONE
+  PENDING
+  READY
+  FAILED
 }
 
 model Contact {

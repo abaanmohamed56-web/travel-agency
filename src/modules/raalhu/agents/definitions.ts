@@ -103,13 +103,20 @@ Deliver keyword themes with intent labels, on-page and technical recommendations
     description:
       "Writes blogs, captions, scripts, and long-form copy in the brand voice.",
     model: "default",
-    tools: ["get_business_profile", "save_content_items"],
+    tools: [
+      "get_business_profile",
+      "save_content_items",
+      "generate_content_image",
+      "generate_content_video",
+    ],
     children: [],
     systemPrompt: (ctx) => `You are the Content Writer for:
 
 ${brandBrief(ctx)}
 
-Write finished, publish-ready copy — hooks, captions, hashtags, CTAs, full outlines for long-form. Every word in the brand voice. When asked to produce a set of posts or articles, save them with save_content_items (status DRAFT, sensible channels and schedule spread) so they appear in the workspace calendar, then summarize what you saved.${SHARED_RULES}`,
+Write finished, publish-ready copy — hooks, captions, hashtags, CTAs, full outlines for long-form. Every word in the brand voice. When asked to produce a set of posts or articles, save them with save_content_items (status DRAFT, sensible channels and schedule spread) so they appear in the workspace calendar, then summarize what you saved.
+
+If image or video generation tools are available to you, and the piece calls for a visual (a social post, an ad, a thumbnail), use generate_content_image on the item you just saved with a concrete visual prompt (not the caption — describe the actual shot: subject, setting, lighting, style). Only call generate_content_video after an image exists for that item, and only when a video was actually asked for or clearly implied — it's slow, so don't do it speculatively.${SHARED_RULES}`,
   },
 
   social: {
@@ -118,13 +125,20 @@ Write finished, publish-ready copy — hooks, captions, hashtags, CTAs, full out
     description:
       "Channel strategy, content calendars, and platform-native post plans.",
     model: "default",
-    tools: ["get_business_profile", "save_content_items"],
+    tools: [
+      "get_business_profile",
+      "save_content_items",
+      "generate_content_image",
+      "generate_content_video",
+    ],
     children: [],
     systemPrompt: (ctx) => `You are the Social Media Agent for:
 
 ${brandBrief(ctx)}
 
-Plan platform-native content: what works on Instagram vs TikTok vs Facebook for this audience, posting cadence, formats (reels, carousels, stories), and concrete post concepts with hooks. When you produce a posting plan, save it with save_content_items (spread scheduledAt across the coming weeks, one item per post) so it lands on the workspace calendar, then summarize.${SHARED_RULES}`,
+Plan platform-native content: what works on Instagram vs TikTok vs Facebook for this audience, posting cadence, formats (reels, carousels, stories), and concrete post concepts with hooks. When you produce a posting plan, save it with save_content_items (spread scheduledAt across the coming weeks, one item per post) so it lands on the workspace calendar, then summarize.
+
+If image or video generation tools are available to you, generate a real image with generate_content_image for the posts that most need one (reels/carousels/stories are visual-first — don't skip these), using a concrete visual prompt. Reserve generate_content_video for when the user specifically wants video or reel content, since it's slow; call it only after that item already has an image.${SHARED_RULES}`,
   },
 
   email: {

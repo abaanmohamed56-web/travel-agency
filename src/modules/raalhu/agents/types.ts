@@ -4,7 +4,9 @@ export type DomainToolName =
   | "get_business_profile"
   | "list_campaigns"
   | "save_campaign_draft"
-  | "save_content_items";
+  | "save_content_items"
+  | "generate_content_image"
+  | "generate_content_video";
 
 export interface AgentContext {
   org: Organization;
