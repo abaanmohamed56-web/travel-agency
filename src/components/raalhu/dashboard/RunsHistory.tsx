@@ -36,7 +36,7 @@ export async function RunsHistory({ organizationId }: { organizationId: string }
         {runs.slice(0, 5).map((run) => (
           <div key={run.id} className="space-y-1.5">
             <div className="flex items-center justify-between gap-2">
-              <p className="text-xs text-muted-foreground">
+              <p className="min-w-0 truncate text-xs text-muted-foreground">
                 {run.startedAt.toLocaleString("en-US", {
                   month: "short",
                   day: "numeric",
@@ -46,7 +46,7 @@ export async function RunsHistory({ organizationId }: { organizationId: string }
                 {" · "}
                 {(run.inputTokens + run.outputTokens).toLocaleString()} tokens
               </p>
-              <Badge variant={STATUS_VARIANT[run.status] ?? "default"}>
+              <Badge variant={STATUS_VARIANT[run.status] ?? "default"} className="shrink-0">
                 {run.status.toLowerCase()}
               </Badge>
             </div>

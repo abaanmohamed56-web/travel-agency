@@ -66,10 +66,12 @@ export default async function CommandCenterPage() {
         <StatCard label="Scheduled this week" value={scheduledThisWeek} icon={Calendar} />
       </div>
 
-      <div className="mt-6 grid gap-6 lg:grid-cols-[1fr_320px]">
-        <CommandCenterChat aiConfigured={aiConfigured} />
+      <div className="mt-6 grid min-w-0 gap-6 lg:grid-cols-[1fr_320px]">
+        <div className="min-w-0">
+          <CommandCenterChat aiConfigured={aiConfigured} />
+        </div>
 
-        <div className="space-y-6">
+        <div className="min-w-0 space-y-6">
         <Card variant="glass" className="h-fit">
           <CardHeader className="pb-3">
             <CardTitle className="text-base">Coming up</CardTitle>
