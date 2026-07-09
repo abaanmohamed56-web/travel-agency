@@ -14,10 +14,11 @@ import {
   startOfWeek,
 } from "date-fns";
 import { requireRaalhuContext } from "@/modules/raalhu/auth/context";
-import { listContentInRange } from "@/modules/raalhu/db/queries";
+import { listCampaigns, listContentInRange } from "@/modules/raalhu/db/queries";
 import { PageHeader } from "@/components/raalhu/dashboard/PageHeader";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/raalhu/ui/button";
+import { AddContentDialog } from "@/components/raalhu/dashboard/AddContentDialog";
 
 export const metadata = { title: "Content Calendar" };
 
@@ -43,7 +44,10 @@ export default async function CalendarPage({
   const gridStart = startOfWeek(monthStart);
   const gridEnd = endOfWeek(endOfMonth(cursor));
 
-  const items = await listContentInRange(org.id, gridStart, gridEnd);
+  const [items, campaigns] = await Promise.all([
+    listContentInRange(org.id, gridStart, gridEnd),
+    listCampaigns(org.id),
+  ]);
 
   const days: Date[] = [];
   for (let d = gridStart; d <= gridEnd; d = addDays(d, 1)) days.push(d);
@@ -75,6 +79,10 @@ export default async function CalendarPage({
             >
               <ChevronRight />
             </Link>
+            <AddContentDialog
+              campaigns={campaigns.map((c) => ({ id: c.id, name: c.name }))}
+              defaultDate={format(monthStart, "yyyy-MM-dd")}
+            />
           </div>
         }
       />

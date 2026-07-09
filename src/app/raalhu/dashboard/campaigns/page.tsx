@@ -5,6 +5,7 @@ import { listCampaigns } from "@/modules/raalhu/db/queries";
 import { PageHeader } from "@/components/raalhu/dashboard/PageHeader";
 import { Badge } from "@/components/raalhu/ui/badge";
 import { Card } from "@/components/raalhu/ui/card";
+import { AddCampaignDialog } from "@/components/raalhu/dashboard/AddCampaignDialog";
 
 export const metadata = { title: "Campaigns" };
 
@@ -25,6 +26,7 @@ export default async function CampaignsPage() {
       <PageHeader
         title="Campaigns"
         description="Every initiative your team is running — human- or agent-created."
+        actions={<AddCampaignDialog />}
       />
 
       {campaigns.length === 0 ? (

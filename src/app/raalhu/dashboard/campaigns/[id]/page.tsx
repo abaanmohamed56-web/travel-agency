@@ -5,6 +5,8 @@ import { requireRaalhuContext } from "@/modules/raalhu/auth/context";
 import { getCampaign } from "@/modules/raalhu/db/queries";
 import { Badge } from "@/components/raalhu/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/raalhu/ui/card";
+import { CampaignStatusSelect } from "@/components/raalhu/dashboard/CampaignStatusSelect";
+import { ContentStatusSelect } from "@/components/raalhu/dashboard/ContentStatusSelect";
 
 export const metadata = { title: "Campaign" };
 
@@ -32,7 +34,7 @@ export default async function CampaignDetailPage({
 
       <div className="flex flex-wrap items-center gap-3">
         <h1 className="text-2xl font-semibold tracking-tight">{campaign.name}</h1>
-        <Badge>{campaign.status.toLowerCase()}</Badge>
+        <CampaignStatusSelect campaignId={campaign.id} status={campaign.status} />
         {campaign.createdByAgent && (
           <Badge variant="outline">
             <Bot className="size-3" /> created by AI
@@ -101,7 +103,7 @@ export default async function CampaignDetailPage({
                     : "unscheduled"}
                 </p>
               </div>
-              <Badge variant="secondary">{item.status.toLowerCase()}</Badge>
+              <ContentStatusSelect contentId={item.id} status={item.status} />
             </div>
           ))}
         </CardContent>

@@ -59,6 +59,75 @@ export const addContactNoteSchema = z.object({
 });
 export type AddContactNoteInput = z.infer<typeof addContactNoteSchema>;
 
+export const campaignStatuses = [
+  "DRAFT",
+  "ACTIVE",
+  "PAUSED",
+  "COMPLETED",
+  "ARCHIVED",
+] as const;
+
+export const createCampaignSchema = z.object({
+  name: z.string().trim().min(1).max(120),
+  objective: z.string().trim().max(2000).optional(),
+  channels: z.array(z.string().trim().min(1).max(40)).max(10).optional(),
+  budget: z.number().positive().max(10_000_000).optional(),
+  startDate: z.iso.datetime().optional(),
+  endDate: z.iso.datetime().optional(),
+});
+export type CreateCampaignInput = z.infer<typeof createCampaignSchema>;
+
+export const updateCampaignSchema = z.object({
+  name: z.string().trim().min(1).max(120).optional(),
+  objective: z.string().trim().max(2000).optional(),
+  channels: z.array(z.string().trim().min(1).max(40)).max(10).optional(),
+  budget: z.number().positive().max(10_000_000).optional(),
+  startDate: z.iso.datetime().optional(),
+  endDate: z.iso.datetime().optional(),
+  status: z.enum(campaignStatuses).optional(),
+});
+export type UpdateCampaignInput = z.infer<typeof updateCampaignSchema>;
+
+export const contentTypes = [
+  "SOCIAL_POST",
+  "BLOG_POST",
+  "EMAIL",
+  "AD_COPY",
+  "SCRIPT",
+  "OTHER",
+] as const;
+
+export const contentStatuses = [
+  "IDEA",
+  "DRAFT",
+  "REVIEW",
+  "APPROVED",
+  "SCHEDULED",
+  "PUBLISHED",
+] as const;
+
+export const createContentItemSchema = z.object({
+  title: z.string().trim().min(1).max(200),
+  body: z.string().trim().max(20000).optional(),
+  contentType: z.enum(contentTypes).optional().default("SOCIAL_POST"),
+  channel: z.string().trim().max(40).optional(),
+  status: z.enum(contentStatuses).optional().default("DRAFT"),
+  scheduledAt: z.iso.datetime().optional(),
+  campaignId: z.cuid().optional(),
+});
+export type CreateContentItemInput = z.infer<typeof createContentItemSchema>;
+
+export const updateContentItemSchema = z.object({
+  title: z.string().trim().min(1).max(200).optional(),
+  body: z.string().trim().max(20000).optional(),
+  contentType: z.enum(contentTypes).optional(),
+  channel: z.string().trim().max(40).optional(),
+  status: z.enum(contentStatuses).optional(),
+  scheduledAt: z.iso.datetime().optional(),
+  campaignId: z.cuid().optional(),
+});
+export type UpdateContentItemInput = z.infer<typeof updateContentItemSchema>;
+
 export function slugify(value: string): string {
   return value
     .toLowerCase()
