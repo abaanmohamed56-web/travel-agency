@@ -11,6 +11,7 @@ import { StatCard } from "@/components/raalhu/dashboard/StatCard";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/raalhu/ui/card";
 import { Badge } from "@/components/raalhu/ui/badge";
 import { CommandCenterChat } from "@/components/raalhu/chat/CommandCenterChat";
+import { RunsHistory } from "@/components/raalhu/dashboard/RunsHistory";
 
 export const metadata = { title: "Command Center" };
 
@@ -68,6 +69,7 @@ export default async function CommandCenterPage() {
       <div className="mt-6 grid gap-6 lg:grid-cols-[1fr_320px]">
         <CommandCenterChat aiConfigured={aiConfigured} />
 
+        <div className="space-y-6">
         <Card variant="glass" className="h-fit">
           <CardHeader className="pb-3">
             <CardTitle className="text-base">Coming up</CardTitle>
@@ -105,6 +107,8 @@ export default async function CommandCenterPage() {
             </Link>
           </CardContent>
         </Card>
+        <RunsHistory organizationId={org.id} />
+        </div>
       </div>
     </main>
   );
