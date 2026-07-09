@@ -8,7 +8,7 @@ import {
   MediaNotConfiguredError,
 } from "@/modules/raalhu/lib/media";
 import { AGENTS } from "./definitions";
-import type { AgentContext, AgentDefinition, DomainToolName } from "./types";
+import type { AgentContext, AgentDefinition, DomainToolName, EmitFn } from "./types";
 
 export const DELEGATE_TOOL = "delegate_to_agent";
 
@@ -225,7 +225,8 @@ export async function executeDomainTool(
   name: string,
   input: unknown,
   ctx: AgentContext,
-  agentId: string
+  agentId: string,
+  emit: EmitFn
 ): Promise<string> {
   switch (name as DomainToolName) {
     case "get_business_profile": {
@@ -279,6 +280,12 @@ export async function executeDomainTool(
           metadata: { runId: ctx.runId, name: data.name },
         },
       });
+      emit({
+        type: "artifact",
+        agentId,
+        title: `Campaign: ${data.name}`,
+        href: `/raalhu/dashboard/campaigns/${campaign.id}`,
+      });
       return `Saved campaign draft "${data.name}" with id ${campaign.id}. The user can review it on the Campaigns page.`;
     }
 
@@ -327,6 +334,14 @@ export async function executeDomainTool(
         },
       });
       const list = created.map((c) => `- ${c.id}: "${c.title}"`).join("\n");
+      emit({
+        type: "artifact",
+        agentId,
+        title: `${created.length} content item${created.length === 1 ? "" : "s"} saved`,
+        href: campaignId
+          ? `/raalhu/dashboard/campaigns/${campaignId}`
+          : "/raalhu/dashboard/calendar",
+      });
       return `Saved ${created.length} content item(s) to the workspace calendar as drafts.\n${list}`;
     }
 
@@ -337,6 +352,14 @@ export async function executeDomainTool(
       try {
         const item = await generateContentImage(ctx.org.id, data.contentItemId, data.prompt);
         if (item.imageStatus === "READY" && item.imageUrl) {
+          emit({
+            type: "artifact",
+            agentId,
+            title: `Image: ${item.title}`,
+            href: item.campaignId
+              ? `/raalhu/dashboard/campaigns/${item.campaignId}`
+              : "/raalhu/dashboard/calendar",
+          });
           return `Image ready: ${item.imageUrl}`;
         }
         if (item.imageStatus === "FAILED") {
@@ -360,6 +383,14 @@ export async function executeDomainTool(
         if (item.videoStatus === "FAILED") {
           return `Video generation failed: ${item.mediaError ?? "unknown error"}.`;
         }
+        emit({
+          type: "artifact",
+          agentId,
+          title: `Video generating: ${item.title}`,
+          href: item.campaignId
+            ? `/raalhu/dashboard/campaigns/${item.campaignId}`
+            : "/raalhu/dashboard/calendar",
+        });
         return "Video generation started (takes 1-3+ minutes) — it will appear on the Content Calendar once ready.";
       } catch (err) {
         if (err instanceof MediaNotConfiguredError) {

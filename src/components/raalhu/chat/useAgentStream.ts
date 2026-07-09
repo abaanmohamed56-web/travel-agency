@@ -8,6 +8,7 @@ export type AgentEvent =
   | { type: "agent_finished"; agentId: string }
   | { type: "tool_started"; agentId: string; tool: string }
   | { type: "tool_finished"; agentId: string; tool: string }
+  | { type: "artifact"; agentId: string; title: string; href: string }
   | { type: "run_finished"; runId?: string; conversationId?: string }
   | { type: "error"; code?: string; message: string };
 
@@ -19,14 +20,21 @@ export interface ActivityItem {
   done: boolean;
 }
 
+export interface ArtifactLink {
+  id: number;
+  title: string;
+  href: string;
+}
+
 export interface ChatTurn {
   role: "user" | "assistant";
   text: string;
   activity?: ActivityItem[];
+  artifacts?: ArtifactLink[];
 }
 
 /** Streams POST /api/raalhu/chat SSE events into chat state (fetch — EventSource can't POST). */
-export function useAgentStream() {
+export function useAgentStream(onRunFinished?: () => void) {
   const [turns, setTurns] = useState<ChatTurn[]>([]);
   const [streaming, setStreaming] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -104,10 +112,20 @@ export function useAgentStream() {
             ),
           }));
           break;
+        case "artifact":
+          patchAssistant((t) => ({
+            ...t,
+            artifacts: [
+              ...(t.artifacts ?? []),
+              { id: activitySeq.current++, title: event.title, href: event.href },
+            ],
+          }));
+          break;
         case "run_finished":
           if (event.conversationId) {
             conversationIdRef.current = event.conversationId;
           }
+          onRunFinished?.();
           break;
         case "error":
           setError(event.message);
@@ -172,7 +190,7 @@ export function useAgentStream() {
       });
       setStreaming(false);
     }
-  }, []);
+  }, [onRunFinished]);
 
   return { turns, streaming, error, send };
 }

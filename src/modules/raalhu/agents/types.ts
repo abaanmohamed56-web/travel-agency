@@ -35,6 +35,10 @@ export type AgentEvent =
   | { type: "agent_finished"; agentId: string }
   | { type: "tool_started"; agentId: string; tool: string }
   | { type: "tool_finished"; agentId: string; tool: string }
+  // Something the user can click through to — a saved campaign, a batch of
+  // content items, a generated visual. Rendered as a link chip in the chat
+  // turn that produced it, so "the AI did something" is never a dead end.
+  | { type: "artifact"; agentId: string; title: string; href: string }
   | { type: "run_finished"; runId?: string; conversationId?: string }
   | { type: "error"; code?: string; message: string };
 

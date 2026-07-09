@@ -1,7 +1,10 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 import {
+  ArrowRight,
   BarChart3,
   Brain,
   Check,
@@ -94,12 +97,31 @@ function Turn({ turn }: { turn: ChatTurn }) {
           {turn.text}
         </div>
       )}
+      {(turn.artifacts?.length ?? 0) > 0 && (
+        <div className="flex flex-wrap gap-1.5">
+          {turn.artifacts!.map((a) => (
+            <Link
+              key={a.id}
+              href={a.href}
+              className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-3 py-1.5 text-xs text-primary transition-colors hover:bg-primary/20"
+            >
+              {a.title}
+              <ArrowRight className="size-3" />
+            </Link>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
 
 export function CommandCenterChat({ aiConfigured }: { aiConfigured: boolean }) {
-  const { turns, streaming, error, send } = useAgentStream();
+  const router = useRouter();
+  // Refreshes server-rendered data (stat cards, "Coming up") once a run
+  // finishes, so newly created campaigns/content show up without a manual
+  // page reload — router.refresh() re-fetches the page's server data only,
+  // it doesn't reset this component's own chat state.
+  const { turns, streaming, error, send } = useAgentStream(() => router.refresh());
   const [input, setInput] = useState("");
   const scrollRef = useRef<HTMLDivElement>(null);
 

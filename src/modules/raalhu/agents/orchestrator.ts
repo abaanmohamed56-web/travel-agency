@@ -107,7 +107,8 @@ export async function runAgent(opts: RunAgentOptions): Promise<string> {
             toolUse.name,
             toolUse.input,
             ctx,
-            agent.id
+            agent.id,
+            emit
           );
           emit({ type: "tool_finished", agentId: agent.id, tool: toolUse.name });
         }
