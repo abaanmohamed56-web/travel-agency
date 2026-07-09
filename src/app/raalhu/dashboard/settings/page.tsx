@@ -1,5 +1,5 @@
 import { KeyRound } from "lucide-react";
-import { requireRaalhuContext } from "@/modules/raalhu/auth/context";
+import { hasRole, requireRaalhuContext } from "@/modules/raalhu/auth/context";
 import {
   getBusinessProfile,
   listMembers,
@@ -15,11 +15,18 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/raalhu/ui/tabs";
+import { EditProfileDialog } from "@/components/raalhu/dashboard/EditProfileDialog";
+import { InviteMemberDialog } from "@/components/raalhu/dashboard/InviteMemberDialog";
+import { MemberRoleSelect } from "@/components/raalhu/dashboard/MemberRoleSelect";
+import { RemoveMemberButton } from "@/components/raalhu/dashboard/RemoveMemberButton";
+import { CreateApiKeyDialog } from "@/components/raalhu/dashboard/CreateApiKeyDialog";
+import { RevokeApiKeyButton } from "@/components/raalhu/dashboard/RevokeApiKeyButton";
 
 export const metadata = { title: "Settings" };
 
 export default async function SettingsPage() {
-  const { org } = await requireRaalhuContext();
+  const { org, membership } = await requireRaalhuContext();
+  const isAdmin = hasRole(membership, "ADMIN");
   const [profile, members, apiKeys] = await Promise.all([
     getBusinessProfile(org.id),
     listMembers(org.id),
@@ -54,10 +61,25 @@ export default async function SettingsPage() {
 
         <TabsContent value="profile">
           <Card variant="glass">
-            <CardHeader>
+            <CardHeader className="flex-row items-start justify-between gap-4 space-y-0">
               <CardTitle className="text-base">
                 What your AI team knows
               </CardTitle>
+              {isAdmin && (
+                <EditProfileDialog
+                  profile={{
+                    businessName: profile?.businessName ?? org.name,
+                    industry: profile?.industry ?? "",
+                    description: profile?.description ?? "",
+                    targetAudience: profile?.targetAudience ?? "",
+                    brandVoice: profile?.brandVoice ?? "",
+                    websiteUrl: profile?.websiteUrl ?? "",
+                    goals: Array.isArray(profile?.goals)
+                      ? (profile.goals as string[])
+                      : [],
+                  }}
+                />
+              )}
             </CardHeader>
             <CardContent className="space-y-4">
               {profileRows.map(([label, value]) => (
@@ -78,20 +100,17 @@ export default async function SettingsPage() {
                   </div>
                 </div>
               )}
-              <p className="pt-2 text-xs text-muted-foreground">
-                Profile editing lands with the next phase — for now this is set
-                during onboarding.
-              </p>
             </CardContent>
           </Card>
         </TabsContent>
 
         <TabsContent value="team">
           <Card variant="glass">
-            <CardHeader>
+            <CardHeader className="flex-row items-start justify-between gap-4 space-y-0">
               <CardTitle className="text-base">
                 Members ({members.length})
               </CardTitle>
+              {isAdmin && <InviteMemberDialog />}
             </CardHeader>
             <CardContent className="space-y-4">
               {members.map((m) => (
@@ -105,28 +124,35 @@ export default async function SettingsPage() {
                       {m.user.email}
                     </p>
                   </div>
-                  <Badge variant="secondary">{m.role.toLowerCase()}</Badge>
+                  {m.role === "OWNER" ? (
+                    <Badge>owner</Badge>
+                  ) : isAdmin ? (
+                    <div className="flex items-center gap-1">
+                      <MemberRoleSelect membershipId={m.id} role={m.role} />
+                      <RemoveMemberButton membershipId={m.id} />
+                    </div>
+                  ) : (
+                    <Badge variant="secondary">{m.role.toLowerCase()}</Badge>
+                  )}
                 </div>
               ))}
-              <p className="pt-2 text-xs text-muted-foreground">
-                Invitations arrive with the collaboration phase.
-              </p>
             </CardContent>
           </Card>
         </TabsContent>
 
         <TabsContent value="api-keys">
           <Card variant="glass">
-            <CardHeader>
+            <CardHeader className="flex-row items-start justify-between gap-4 space-y-0">
               <CardTitle className="text-base">API keys</CardTitle>
+              {isAdmin && <CreateApiKeyDialog />}
             </CardHeader>
             <CardContent>
               {apiKeys.length === 0 ? (
                 <div className="flex flex-col items-center gap-3 py-8 text-center">
                   <KeyRound className="size-7 text-primary" />
                   <p className="max-w-sm text-sm text-muted-foreground">
-                    Programmatic access to your workspace — key creation ships
-                    with the public API phase.
+                    Programmatic access to your workspace. Create a key to get
+                    started.
                   </p>
                 </div>
               ) : (
@@ -142,11 +168,14 @@ export default async function SettingsPage() {
                           ••••{k.lastFour}
                         </p>
                       </div>
-                      <p className="text-xs text-muted-foreground">
-                        {k.lastUsedAt
-                          ? `last used ${k.lastUsedAt.toLocaleDateString()}`
-                          : "never used"}
-                      </p>
+                      <div className="flex items-center gap-3">
+                        <p className="text-xs text-muted-foreground">
+                          {k.lastUsedAt
+                            ? `last used ${k.lastUsedAt.toLocaleDateString()}`
+                            : "never used"}
+                        </p>
+                        {isAdmin && <RevokeApiKeyButton apiKeyId={k.id} />}
+                      </div>
                     </div>
                   ))}
                 </div>

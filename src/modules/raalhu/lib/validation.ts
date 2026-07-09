@@ -128,6 +128,38 @@ export const updateContentItemSchema = z.object({
 });
 export type UpdateContentItemInput = z.infer<typeof updateContentItemSchema>;
 
+export const updateBusinessProfileSchema = z.object({
+  businessName: z.string().trim().min(1).max(120).optional(),
+  industry: z.string().trim().max(80).optional(),
+  description: z.string().trim().max(2000).optional(),
+  targetAudience: z.string().trim().max(2000).optional(),
+  brandVoice: z.string().trim().max(2000).optional(),
+  websiteUrl: z.union([z.url(), z.literal("")]).optional(),
+  goals: z.array(z.string().trim().min(1).max(200)).max(10).optional(),
+});
+export type UpdateBusinessProfileInput = z.infer<
+  typeof updateBusinessProfileSchema
+>;
+
+/** OWNER is excluded — ownership isn't transferable through the members API. */
+export const assignableMembershipRoles = ["ADMIN", "MEMBER", "VIEWER"] as const;
+
+export const inviteMemberSchema = z.object({
+  email: z.email(),
+  role: z.enum(assignableMembershipRoles).optional().default("MEMBER"),
+});
+export type InviteMemberInput = z.infer<typeof inviteMemberSchema>;
+
+export const updateMemberRoleSchema = z.object({
+  role: z.enum(assignableMembershipRoles),
+});
+export type UpdateMemberRoleInput = z.infer<typeof updateMemberRoleSchema>;
+
+export const createApiKeySchema = z.object({
+  name: z.string().trim().min(1).max(80),
+});
+export type CreateApiKeyInput = z.infer<typeof createApiKeySchema>;
+
 export function slugify(value: string): string {
   return value
     .toLowerCase()
