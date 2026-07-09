@@ -2,8 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
 
 /**
- * Next.js 16 proxy (successor to middleware). Guards Raalhu AI surfaces only —
- * the matcher must never widen to SkillPips routes, which handle their own auth.
+ * Next.js 16 proxy (successor to middleware). Guards Raalhu AI surfaces only.
  */
 export async function proxy(request: NextRequest) {
   const token = await getToken({

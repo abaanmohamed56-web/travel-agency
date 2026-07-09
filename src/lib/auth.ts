@@ -35,7 +35,6 @@ export const authOptions: NextAuthOptions = {
           email: user.email,
           name: user.name,
           role: user.role,
-          plan: user.plan,
         };
       },
     }),
@@ -46,7 +45,6 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         token.id = user.id;
         token.role = (user as any).role;
-        token.plan = (user as any).plan;
         // Raalhu AI: seed the active organization from the user's first membership.
         const membership = await prisma.membership.findFirst({
           where: { userId: user.id },
@@ -77,7 +75,6 @@ export const authOptions: NextAuthOptions = {
       if (token && session.user) {
         (session.user as any).id = token.id as string;
         (session.user as any).role = token.role;
-        (session.user as any).plan = token.plan;
         session.user.raalhuOrgId = token.raalhuOrgId;
         session.user.raalhuRole = token.raalhuRole;
       }
@@ -85,8 +82,8 @@ export const authOptions: NextAuthOptions = {
     },
   },
   pages: {
-    signIn: "/auth/login",
-    error: "/auth/login",
+    signIn: "/raalhu/login",
+    error: "/raalhu/login",
   },
   secret: process.env.NEXTAUTH_SECRET,
 };

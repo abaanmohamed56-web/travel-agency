@@ -2,9 +2,8 @@
 
 All Raalhu tables are prefixed `raalhu_` (Prisma `@@map`) and live in
 `prisma/schema/raalhu.prisma`, alongside the shared NextAuth models
-(`base.prisma`) and SkillPips models (`skillpips.prisma`). `Organization` is
-the tenancy boundary — every domain row hangs off it and every query filters
-by `organizationId`.
+(`base.prisma`). `Organization` is the tenancy boundary — every domain row
+hangs off it and every query filters by `organizationId`.
 
 ```mermaid
 erDiagram
@@ -24,6 +23,7 @@ erDiagram
     AgentRun ||--o{ AgentTask : "delegations"
     AgentTask ||--o{ AgentTask : "parentTaskId (tree)"
     Campaign ||--o{ ContentItem : contains
+    Contact ||--o{ ContactActivity : "timeline"
 
     Membership {
         enum role "OWNER ADMIN MEMBER VIEWER"
@@ -61,6 +61,10 @@ erDiagram
     Contact {
         enum stage "LEAD MQL SQL CUSTOMER CHURNED"
     }
+    ContactActivity {
+        enum type "NOTE STAGE_CHANGE EMAIL CALL"
+        string body
+    }
 ```
 
 Notes:
@@ -70,7 +74,9 @@ Notes:
   only Raalhu relation on `User` is `memberships`.
 - `ContentItem.@@index([organizationId, scheduledAt])` powers the calendar;
   `Contact.@@unique([organizationId, email])` dedupes CRM contacts per org.
-- `RaalhuNotification` is named to avoid colliding with SkillPips'
-  `Notification` model.
-- Migrations live in `prisma/schema/migrations/` (`init_baseline` = pre-Raalhu
-  tables, `raalhu_multitenant` = everything here).
+- `ContactActivity.@@index([contactId, createdAt])` powers the CRM timeline;
+  stage changes on a `Contact` are auto-logged as a `STAGE_CHANGE` activity.
+- Migrations live in `prisma/schema/migrations/` (`init_baseline` = base
+  schema, `raalhu_multitenant` = core Raalhu models, `remove_skillpips` =
+  dropped the pre-existing SkillPips tables/columns, `raalhu_crm_depth` =
+  `ContactActivity`).

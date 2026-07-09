@@ -1,5 +1,4 @@
-// Raalhu AI domain models. All tables are prefixed `raalhu_` via @@map so the
-// Postgres namespace stays unambiguous next to the SkillPips tables.
+// Raalhu AI domain models. All tables are prefixed `raalhu_` via @@map.
 //
 // Multi-tenancy: every domain row hangs off an Organization. Users join via
 // Membership. Fields like `createdById` are plain indexed user-id strings

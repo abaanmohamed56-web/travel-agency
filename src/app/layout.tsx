@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Syne } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/layout/Providers";
 
@@ -9,33 +9,29 @@ const inter = Inter({
   display: "swap",
 });
 
-const syne = Syne({
-  subsets: ["latin"],
-  variable: "--font-syne",
-  display: "swap",
-});
-
 export const metadata: Metadata = {
-  title: "SkillPips — Master Forex. Trade With Precision.",
+  title: "Raalhu AI — Your AI Growth Operating System",
   description:
-    "Join SkillPips and learn professional trading strategies, live mentorship, signals, and market psychology.",
+    "Raalhu AI is an autonomous AI marketing platform: a team of specialist agents that research, strategize, create, publish, and optimize your growth — all from one command.",
   keywords: [
-    "forex education",
-    "trading signals",
-    "forex mentorship",
-    "trading strategies",
+    "AI marketing",
+    "autonomous marketing agents",
+    "AI growth platform",
+    "marketing automation",
   ],
   openGraph: {
-    title: "SkillPips — Master Forex. Trade With Precision.",
-    description: "Professional forex education, signals, and mentorship.",
+    title: "Raalhu AI — Your AI Growth Operating System",
+    description:
+      "An AI marketing team that researches, creates, publishes, and optimizes your growth autonomously.",
     type: "website",
     locale: "en_US",
-    siteName: "SkillPips",
+    siteName: "Raalhu AI",
   },
   twitter: {
     card: "summary_large_image",
-    title: "SkillPips — Master Forex. Trade With Precision.",
-    description: "Professional forex education, signals, and mentorship.",
+    title: "Raalhu AI — Your AI Growth Operating System",
+    description:
+      "An AI marketing team that researches, creates, publishes, and optimizes your growth autonomously.",
   },
   robots: { index: true, follow: true },
 };
@@ -46,7 +42,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${inter.variable} ${syne.variable}`} suppressHydrationWarning>
+    <html lang="en" className={inter.variable} suppressHydrationWarning>
       <head>
         <meta name="theme-color" content="#080A0F" />
       </head>

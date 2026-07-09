@@ -2,8 +2,7 @@
  * Raalhu AI theme scope.
  *
  * CSS imported from a nested layout is bundled globally, so every selector in
- * this file MUST start with `.raalhu` to avoid leaking into the SkillPips app
- * that shares this Next.js instance. The variables re-declare the HSL token
+ * this file MUST start with `.raalhu`. The variables re-declare the HSL token
  * contract consumed by tailwind.config.js (bg-background, text-primary, ...),
  * so all token utilities resolve to the Raalhu palette inside the subtree.
  */
@@ -11,10 +10,9 @@
 /*
  * globals.css ships an UNLAYERED `* { padding: 0; margin: 0 }` reset that
  * defeats every layered Tailwind spacing utility (unlayered author CSS beats
- * all @layer styles). SkillPips' current look depends on that quirk, so it
- * can't be fixed globally. Inside the Raalhu subtree we roll those two
- * properties back to the cascade layers, where Tailwind's preflight still
- * zeroes them and utilities win as designed.
+ * all @layer styles). Inside the Raalhu subtree we roll those two properties
+ * back to the cascade layers, where Tailwind's preflight still zeroes them
+ * and utilities win as designed.
  */
 .raalhu,
 .raalhu * {

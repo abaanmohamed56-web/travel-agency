@@ -53,7 +53,7 @@ async function resolveContext(): Promise<RaalhuContext | null | "no-org"> {
 /** For Server Components / pages: redirects to login or onboarding as needed. */
 export async function requireRaalhuContext(): Promise<RaalhuContext> {
   const ctx = await resolveContext();
-  if (ctx === null) redirect("/auth/login?callbackUrl=/raalhu/dashboard");
+  if (ctx === null) redirect("/raalhu/login?callbackUrl=/raalhu/dashboard");
   if (ctx === "no-org") redirect("/raalhu/onboarding");
   return ctx;
 }

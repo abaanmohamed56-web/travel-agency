@@ -6,7 +6,7 @@ datasource db {
   provider = "postgresql"
 }
 
-// Shared auth models (NextAuth) — used by both SkillPips and Raalhu AI.
+// Shared auth models (NextAuth) — used by Raalhu AI.
 
 model User {
   id            String    @id @default(cuid())
@@ -16,18 +16,11 @@ model User {
   password      String?
   image         String?
   role          Role      @default(USER)
-  plan          Plan      @default(FREE)
-  planExpiresAt DateTime?
-  stripeCustomerId   String? @unique
-  stripeSubscriptionId String? @unique
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
   accounts      Account[]
   sessions      Session[]
-  enrollments   Enrollment[]
-  journalEntries JournalEntry[]
-  notifications  Notification[]
 
   // Raalhu AI
   memberships   Membership[]
@@ -37,13 +30,6 @@ enum Role {
   USER
   ADMIN
   MODERATOR
-}
-
-enum Plan {
-  FREE
-  STARTER
-  PRO
-  VIP
 }
 
 model Account {

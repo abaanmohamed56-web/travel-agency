@@ -3,7 +3,7 @@ import path from "path";
 import { defineConfig } from "prisma/config";
 
 export default defineConfig({
-  // Multi-file schema: prisma/schema/{base,skillpips,raalhu}.prisma
+  // Multi-file schema: prisma/schema/{base,raalhu}.prisma
   schema: path.join("prisma", "schema"),
   datasource: {
     // Prisma CLI (migrate/introspect) needs a direct, non-pooled connection.

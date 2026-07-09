@@ -6,7 +6,6 @@ declare module "next-auth" {
     user: DefaultSession["user"] & {
       id: string;
       role?: string;
-      plan?: string;
       /** Active Raalhu organization (hint — re-verified in the DB server-side). */
       raalhuOrgId?: string;
       raalhuRole?: MembershipRole;
@@ -20,7 +19,6 @@ declare module "next-auth/jwt" {
   interface JWT {
     id?: string;
     role?: string;
-    plan?: string;
     raalhuOrgId?: string;
     raalhuRole?: MembershipRole;
   }

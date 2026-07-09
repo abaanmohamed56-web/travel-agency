@@ -7,7 +7,6 @@ const schema = z.object({
   name: z.string().min(2),
   email: z.string().email(),
   password: z.string().min(8),
-  plan: z.enum(["FREE", "STARTER", "PRO", "VIP"]).optional().default("FREE"),
 });
 
 export async function POST(req: NextRequest) {
@@ -27,9 +26,8 @@ export async function POST(req: NextRequest) {
         name: data.name,
         email: data.email,
         password: hashedPassword,
-        plan: data.plan,
       },
-      select: { id: true, name: true, email: true, plan: true, createdAt: true },
+      select: { id: true, name: true, email: true, createdAt: true },
     });
 
     return NextResponse.json({ user }, { status: 201 });
