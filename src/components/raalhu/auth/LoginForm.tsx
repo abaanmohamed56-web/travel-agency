@@ -31,9 +31,7 @@ export function LoginForm() {
       router.push(callbackUrl);
       router.refresh();
     } else {
-      // TODO: revert to a plain "Invalid email or password." once the
-      // deployed-environment login failure is diagnosed and fixed.
-      setError(`Invalid email or password. (${result?.error ?? "no error code"})`);
+      setError("Invalid email or password.");
       setLoading(false);
     }
   }
