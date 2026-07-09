@@ -41,6 +41,9 @@ Open [http://localhost:3000](http://localhost:3000) — it redirects to
   Posting API, video only). Unaudited apps can only post `SELF_ONLY`.
 - `SOCIAL_TOKEN_ENCRYPTION_KEY` — any string; encrypts stored Instagram/TikTok
   OAuth tokens at rest.
+- `CRON_SECRET` — authenticates Vercel's daily call to `/api/cron/autopilot`
+  (Settings → Autopilot). Vercel auto-attaches it as a Bearer token when this
+  env var is set; without it the "Autopilot" toggle has nothing to run.
 
 ## Useful commands
 

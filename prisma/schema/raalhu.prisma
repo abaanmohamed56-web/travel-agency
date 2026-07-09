@@ -12,17 +12,18 @@ model Organization {
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
 
-  memberships     Membership[]
-  businessProfile BusinessProfile?
-  conversations   Conversation[]
-  agentRuns       AgentRun[]
-  campaigns       Campaign[]
-  contentItems    ContentItem[]
-  contacts        Contact[]
-  notifications   RaalhuNotification[]
-  auditLogs       AuditLog[]
-  apiKeys         ApiKey[]
-  socialAccounts  SocialAccount[]
+  memberships       Membership[]
+  businessProfile   BusinessProfile?
+  conversations     Conversation[]
+  agentRuns         AgentRun[]
+  campaigns         Campaign[]
+  contentItems      ContentItem[]
+  contacts          Contact[]
+  notifications     RaalhuNotification[]
+  auditLogs         AuditLog[]
+  apiKeys           ApiKey[]
+  socialAccounts    SocialAccount[]
+  autopilotSettings AutopilotSettings?
 
   @@map("raalhu_organizations")
 }
@@ -73,6 +74,26 @@ model BusinessProfile {
   organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 
   @@map("raalhu_business_profiles")
+}
+
+// Opt-in daily automation: generates a draft content batch on a schedule.
+// Never publishes on its own — output lands as DRAFT for a human to review.
+model AutopilotSettings {
+  id             String    @id @default(cuid())
+  organizationId String    @unique
+  enabled        Boolean   @default(false)
+  postsPerDay    Int       @default(2)
+  videosPerDay   Int       @default(1)
+  channels       String[]  @default([])
+  lastRunAt      DateTime?
+  lastRunStatus  String?
+  lastRunError   String?   @db.Text
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@map("raalhu_autopilot_settings")
 }
 
 model Conversation {

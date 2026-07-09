@@ -165,6 +165,14 @@ export const generateMediaSchema = z.object({
 });
 export type GenerateMediaInput = z.infer<typeof generateMediaSchema>;
 
+export const updateAutopilotSchema = z.object({
+  enabled: z.boolean(),
+  postsPerDay: z.number().int().min(0).max(10),
+  videosPerDay: z.number().int().min(0).max(5),
+  channels: z.array(z.string().min(1).max(40)).max(10).optional().default([]),
+});
+export type UpdateAutopilotInput = z.infer<typeof updateAutopilotSchema>;
+
 export function slugify(value: string): string {
   return value
     .toLowerCase()

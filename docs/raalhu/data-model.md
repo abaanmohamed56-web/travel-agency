@@ -19,6 +19,7 @@ erDiagram
     Organization ||--o{ AuditLog : has
     Organization ||--o{ ApiKey : has
     Organization ||--o{ SocialAccount : has
+    Organization ||--|| AutopilotSettings : has
     Conversation ||--o{ ChatMessage : contains
     Conversation ||--o{ AgentRun : triggers
     AgentRun ||--o{ AgentTask : "delegations"
@@ -74,6 +75,12 @@ erDiagram
         string externalAccountId
         string accessToken "encrypted"
     }
+    AutopilotSettings {
+        boolean enabled
+        int postsPerDay
+        int videosPerDay
+        string lastRunStatus "SUCCEEDED FAILED SKIPPED"
+    }
 ```
 
 Notes:
@@ -101,6 +108,14 @@ Notes:
   tracked — polled via the same media-status endpoint.
 - `ContactActivity.@@index([contactId, createdAt])` powers the CRM timeline;
   stage changes on a `Contact` are auto-logged as a `STAGE_CHANGE` activity.
+- `AutopilotSettings` (`src/modules/raalhu/lib/autopilot.ts`) is opt-in
+  daily automation, disabled by default. Vercel Cron hits
+  `GET /api/cron/autopilot` once a day (`vercel.json`, secured by
+  `CRON_SECRET` — deliberately outside `/api/raalhu/*`, since that prefix's
+  proxy guard requires a browser session a cron job doesn't have). It runs
+  the normal master-agent orchestration (`startRun`) as the org's OWNER
+  member, with an instruction to draft the configured post/video count and
+  save everything as `DRAFT` — it never calls the publish tools itself.
 - Migrations live in `prisma/schema/migrations/` (`init_baseline` = base
   schema, `raalhu_multitenant` = core Raalhu models, `remove_skillpips` =
   dropped the pre-existing SkillPips tables/columns, `raalhu_crm_depth` =
