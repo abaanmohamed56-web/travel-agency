@@ -45,6 +45,17 @@ export function listContacts(organizationId: string) {
   });
 }
 
+export function getContact(organizationId: string, id: string) {
+  return prisma.contact.findFirst({ where: { id, organizationId } });
+}
+
+export function listContactActivities(contactId: string) {
+  return prisma.contactActivity.findMany({
+    where: { contactId },
+    orderBy: { createdAt: "desc" },
+  });
+}
+
 export function listNotifications(organizationId: string, userId: string) {
   return prisma.raalhuNotification.findMany({
     where: { organizationId, OR: [{ userId }, { userId: null }] },

@@ -1,11 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { Users } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Avatar } from "@/components/raalhu/ui/avatar";
-import { Badge } from "@/components/raalhu/ui/badge";
 import { Card } from "@/components/raalhu/ui/card";
+import { StageSelect, type LeadStage } from "@/components/raalhu/dashboard/StageSelect";
 
 export interface ContactRow {
   id: string;
@@ -19,14 +20,6 @@ export interface ContactRow {
 }
 
 const STAGES = ["ALL", "LEAD", "MQL", "SQL", "CUSTOMER", "CHURNED"] as const;
-
-const STAGE_BADGE: Record<string, "default" | "secondary" | "success" | "warning" | "destructive" | "outline"> = {
-  LEAD: "secondary",
-  MQL: "default",
-  SQL: "warning",
-  CUSTOMER: "success",
-  CHURNED: "outline",
-};
 
 export function ContactsTable({ contacts }: { contacts: ContactRow[] }) {
   const [stage, setStage] = useState<(typeof STAGES)[number]>("ALL");
@@ -87,20 +80,23 @@ export function ContactsTable({ contacts }: { contacts: ContactRow[] }) {
                   className="border-b border-border/60 transition-colors last:border-0 hover:bg-secondary/40"
                 >
                   <td className="px-5 py-3">
-                    <div className="flex items-center gap-3">
+                    <Link
+                      href={`/raalhu/dashboard/crm/${c.id}`}
+                      className="flex items-center gap-3"
+                    >
                       <Avatar name={c.name} className="size-8 text-[10px]" />
                       <div className="min-w-0">
-                        <p className="truncate font-medium">{c.name ?? "Unknown"}</p>
+                        <p className="truncate font-medium hover:text-primary">
+                          {c.name ?? "Unknown"}
+                        </p>
                         <p className="truncate text-xs text-muted-foreground">
                           {c.email ?? "—"}
                         </p>
                       </div>
-                    </div>
+                    </Link>
                   </td>
                   <td className="px-5 py-3">
-                    <Badge variant={STAGE_BADGE[c.stage] ?? "secondary"}>
-                      {c.stage}
-                    </Badge>
+                    <StageSelect contactId={c.id} stage={c.stage as LeadStage} />
                   </td>
                   <td className="px-5 py-3 text-muted-foreground">
                     {c.source ?? "—"}
@@ -109,7 +105,12 @@ export function ContactsTable({ contacts }: { contacts: ContactRow[] }) {
                     <div className="flex flex-wrap gap-1">
                       {c.tags.length ? (
                         c.tags.map((t) => (
-                          <Badge key={t} variant="outline">{t}</Badge>
+                          <span
+                            key={t}
+                            className="inline-flex items-center rounded-full border border-border px-2.5 py-0.5 text-xs text-muted-foreground"
+                          >
+                            {t}
+                          </span>
                         ))
                       ) : (
                         <span className="text-muted-foreground">—</span>

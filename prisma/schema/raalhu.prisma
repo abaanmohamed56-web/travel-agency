@@ -249,7 +249,8 @@ model Contact {
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
 
-  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organization Organization       @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  activities   ContactActivity[]
 
   @@unique([organizationId, email])
   @@index([organizationId, stage])
@@ -262,6 +263,28 @@ enum LeadStage {
   SQL
   CUSTOMER
   CHURNED
+}
+
+model ContactActivity {
+  id             String              @id @default(cuid())
+  organizationId String
+  contactId      String
+  type           ContactActivityType
+  body           String?             @db.Text
+  actorUserId    String?
+  createdAt      DateTime            @default(now())
+
+  contact Contact @relation(fields: [contactId], references: [id], onDelete: Cascade)
+
+  @@index([contactId, createdAt])
+  @@map("raalhu_contact_activity")
+}
+
+enum ContactActivityType {
+  NOTE
+  STAGE_CHANGE
+  EMAIL
+  CALL
 }
 
 model RaalhuNotification {

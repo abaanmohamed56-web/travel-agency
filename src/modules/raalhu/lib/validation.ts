@@ -30,6 +30,35 @@ export const chatRequestSchema = z.object({
 });
 export type ChatRequestInput = z.infer<typeof chatRequestSchema>;
 
+export const leadStages = ["LEAD", "MQL", "SQL", "CUSTOMER", "CHURNED"] as const;
+
+export const createContactSchema = z.object({
+  name: z.string().trim().min(1).max(120).optional(),
+  email: z.union([z.email(), z.literal("")]).optional(),
+  phone: z.string().trim().max(40).optional(),
+  company: z.string().trim().max(120).optional(),
+  stage: z.enum(leadStages).optional().default("LEAD"),
+  source: z.string().trim().max(80).optional(),
+  tags: z.array(z.string().trim().min(1).max(40)).max(20).optional(),
+});
+export type CreateContactInput = z.infer<typeof createContactSchema>;
+
+export const updateContactSchema = z.object({
+  name: z.string().trim().min(1).max(120).optional(),
+  email: z.union([z.email(), z.literal("")]).optional(),
+  phone: z.string().trim().max(40).optional(),
+  company: z.string().trim().max(120).optional(),
+  stage: z.enum(leadStages).optional(),
+  source: z.string().trim().max(80).optional(),
+  tags: z.array(z.string().trim().min(1).max(40)).max(20).optional(),
+});
+export type UpdateContactInput = z.infer<typeof updateContactSchema>;
+
+export const addContactNoteSchema = z.object({
+  body: z.string().trim().min(1).max(4000),
+});
+export type AddContactNoteInput = z.infer<typeof addContactNoteSchema>;
+
 export function slugify(value: string): string {
   return value
     .toLowerCase()
