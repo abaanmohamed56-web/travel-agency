@@ -90,9 +90,9 @@ export function DashboardShell({
             href={item.href}
             onClick={() => setMobileOpen(false)}
             className={cn(
-              "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors",
+              "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all duration-200",
               active
-                ? "bg-primary/12 font-medium text-primary"
+                ? "r-nav-active font-medium text-primary"
                 : "text-muted-foreground hover:bg-secondary hover:text-foreground"
             )}
           >
@@ -134,8 +134,12 @@ export function DashboardShell({
   return (
     <div className="flex min-h-dvh">
       {/* Desktop sidebar */}
-      <aside className="r-glass-deep fixed inset-y-0 left-0 z-30 hidden w-64 flex-col border-r border-border py-5 lg:flex">
-        <Link href="/raalhu" className="mb-6 px-6">
+      <aside className="r-glass-deep fixed inset-y-0 left-0 z-30 hidden w-64 flex-col overflow-hidden border-r border-border py-5 lg:flex">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -top-24 left-1/2 h-56 w-56 -translate-x-1/2 rounded-full bg-primary/15 blur-[80px]"
+        />
+        <Link href="/raalhu" className="relative mb-6 px-6">
           <RaalhuLogo />
         </Link>
         {orgSwitcher}
@@ -195,7 +199,7 @@ export function DashboardShell({
       )}
 
       {/* Content */}
-      <div className="min-w-0 flex-1 pt-14 lg:pl-64 lg:pt-0">{children}</div>
+      <div className="r-ambient-backdrop min-w-0 flex-1 pt-14 lg:pl-64 lg:pt-0">{children}</div>
     </div>
   );
 }

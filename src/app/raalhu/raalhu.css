@@ -21,25 +21,25 @@
 }
 
 .raalhu {
-  /* Ocean-dark palette, accent #1EA7FF */
-  --background: 216 30% 4%;
+  /* Void-black palette, accent #1EA7FF */
+  --background: 220 30% 2.5%;
   --foreground: 210 25% 96%;
-  --card: 217 27% 7%;
+  --card: 220 26% 5.5%;
   --card-foreground: 210 25% 96%;
-  --popover: 217 28% 6%;
+  --popover: 220 28% 4.5%;
   --popover-foreground: 210 25% 96%;
   --primary: 203 100% 56%;
-  --primary-foreground: 216 30% 4%;
-  --secondary: 217 22% 11%;
+  --primary-foreground: 220 30% 2.5%;
+  --secondary: 220 22% 9%;
   --secondary-foreground: 210 18% 82%;
-  --muted: 217 22% 11%;
+  --muted: 220 22% 9%;
   --muted-foreground: 214 14% 56%;
   --accent: 203 100% 56%;
-  --accent-foreground: 216 30% 4%;
+  --accent-foreground: 220 30% 2.5%;
   --destructive: 0 72% 55%;
   --destructive-foreground: 0 0% 98%;
-  --border: 217 22% 14%;
-  --input: 217 22% 12%;
+  --border: 220 22% 12%;
+  --input: 220 22% 10%;
   --ring: 203 100% 56%;
   --radius: 0.75rem;
   /* Chart steps validated (OKLCH band, chroma, CVD, contrast) against the
@@ -68,14 +68,14 @@
 
 /* Glass surfaces */
 .raalhu .r-glass {
-  background: rgba(255, 255, 255, 0.04);
+  background: linear-gradient(155deg, rgba(30, 167, 255, 0.05) 0%, rgba(255, 255, 255, 0.03) 100%);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .raalhu .r-glass-deep {
-  background: rgba(8, 12, 20, 0.75);
+  background: rgba(3, 5, 9, 0.82);
   backdrop-filter: blur(28px);
   -webkit-backdrop-filter: blur(28px);
   border: 1px solid rgba(255, 255, 255, 0.06);
@@ -92,8 +92,48 @@
   box-shadow: 0 0 24px rgba(30, 167, 255, 0.12);
 }
 
+.raalhu .r-glow-strong {
+  box-shadow:
+    0 0 40px rgba(30, 167, 255, 0.35),
+    0 0 90px rgba(30, 167, 255, 0.14);
+}
+
 .raalhu .r-text-glow {
   text-shadow: 0 0 24px rgba(30, 167, 255, 0.45);
+}
+
+/* Card that glows on hover — used for interactive dashboard surfaces */
+.raalhu .r-card-glow {
+  transition: border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 0 0 rgba(30, 167, 255, 0);
+}
+.raalhu .r-card-glow:hover {
+  border-color: rgba(30, 167, 255, 0.35);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5), 0 0 32px rgba(30, 167, 255, 0.14);
+  transform: translateY(-2px);
+}
+
+/* Ambient page backdrop — a whisper of blue glow over the void-black background,
+   used behind dense dashboard content where the full hero backdrop is too loud. */
+.raalhu .r-ambient-backdrop {
+  position: relative;
+  background: hsl(var(--background));
+}
+.raalhu .r-ambient-backdrop::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 55% 40% at 85% -5%, rgba(30, 167, 255, 0.10) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 35% at 0% 100%, rgba(30, 167, 255, 0.06) 0%, transparent 55%);
+}
+
+/* Active sidebar nav item — left glow bar + soft halo */
+.raalhu .r-nav-active {
+  background: linear-gradient(90deg, rgba(30, 167, 255, 0.16) 0%, rgba(30, 167, 255, 0.03) 100%);
+  box-shadow: inset 2px 0 0 0 #1ea7ff, 0 0 24px rgba(30, 167, 255, 0.12);
 }
 
 /* Gradient text */
@@ -107,9 +147,9 @@
 /* Page backdrops */
 .raalhu .r-hero-backdrop {
   background:
-    radial-gradient(ellipse 70% 45% at 50% -5%, rgba(30, 167, 255, 0.16) 0%, transparent 60%),
-    radial-gradient(ellipse 40% 30% at 85% 25%, rgba(90, 120, 255, 0.08) 0%, transparent 55%),
-    linear-gradient(180deg, hsl(216 30% 4%) 0%, hsl(217 28% 5%) 100%);
+    radial-gradient(ellipse 70% 45% at 50% -5%, rgba(30, 167, 255, 0.20) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 30% at 85% 25%, rgba(90, 120, 255, 0.10) 0%, transparent 55%),
+    linear-gradient(180deg, hsl(220 30% 2.5%) 0%, hsl(220 28% 4%) 100%);
 }
 
 .raalhu .r-grid-backdrop {

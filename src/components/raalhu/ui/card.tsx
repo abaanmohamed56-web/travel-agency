@@ -9,6 +9,7 @@ const cardVariants = cva("rounded-xl text-card-foreground", {
       glass: "r-glass",
       "glass-deep": "r-glass-deep",
       outline: "border border-border bg-transparent",
+      glow: "r-glass r-card-glow border-primary/15",
     },
   },
   defaultVariants: {
